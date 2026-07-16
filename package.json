@@ -1,0 +1,60 @@
+{
+  "name": "unisky-pass",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "contracts:build": "forge build --root contracts",
+    "contracts:test": "forge test --root contracts",
+    "contract:deploy:testnet": "forge script script/Deploy.s.sol:Deploy --root contracts --rpc-url https://testnet-rpc.monad.xyz --broadcast --gas-estimate-multiplier 110",
+    "contract:deploy:mainnet": "forge script script/Deploy.s.sol:Deploy --root contracts --rpc-url https://rpc.monad.xyz --broadcast --gas-estimate-multiplier 110",
+    "contract:verify": "node scripts/verify-contract.mjs"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "overrides": {
+    "postcss": "$postcss"
+  },
+  "dependencies": {
+    "@radix-ui/react-alert-dialog": "^1.1.19",
+    "@radix-ui/react-dialog": "^1.1.19",
+    "@radix-ui/react-toast": "^1.2.19",
+    "@tanstack/react-query": "^5.101.2",
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
+    "lucide-react": "^1.24.0",
+    "next": "16.2.10",
+    "qrcode": "^1.5.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "viem": "^2.55.2",
+    "wagmi": "^3.7.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^20",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^3.2.6",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "jsdom": "^26.1.0",
+    "postcss": "^8.5.10",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^3.2.6"
+  }
+}
