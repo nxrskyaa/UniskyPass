@@ -5,6 +5,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import { BrandMark } from "@/components/brand-mark";
+import { MonadMark } from "@/components/monad-mark";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -115,11 +117,9 @@ export function LandingFilm() {
             },
           });
           sixty
-            .to(".sixty-count", { yPercent: -230, ease: "none" }, 0)
-            .to(".sixty-count--secondary", { yPercent: -340, ease: "none" }, 0.05)
             .to(".sixty-step", { y: 0, opacity: 1, stagger: 0.12, ease: "none" }, 0.18)
-            .to(".sixty-payload", { xPercent: -20, ease: "none" }, 0.2)
-            .to(".sixty-zero", { scale: 12, transformOrigin: "center", ease: "none" }, 0.76);
+            .to(".sixty-brand-block", { yPercent: -16, ease: "none" }, 0.2)
+            .to(".sixty-payload", { xPercent: -20, ease: "none" }, 0.2);
 
           const loop = gsap.timeline({
             scrollTrigger: {
@@ -245,7 +245,7 @@ export function LandingFilm() {
       </div>
 
       <nav className="landing-nav" aria-label="Landing navigation">
-        <a className="landing-nav__brand" href="#scene-intro">UNISKY</a>
+        <a className="landing-nav__brand" href="#scene-intro"><BrandMark className="landing-brand-mark" /><span>UNISKY PASS</span></a>
         <div className="landing-nav__scenes">
           {scenes.map((scene) => (
             <a key={scene.id} href={`#scene-${scene.id}`} aria-current={activeScene === scene.id ? "step" : undefined}>
@@ -300,10 +300,12 @@ export function LandingFilm() {
       <section id="scene-sixty" className="landing-scene landing-scene--sixty" aria-labelledby="sixty-title">
         <div className="landing-scene__inner sixty-scene__inner">
           <div className="sixty-header"><span className="technical-label">02 / THE CHALLENGE</span><span className="mono-data">EIP-712 / CHAIN-BOUND</span></div>
-          <div className="sixty-count-wrap" aria-label="A sixty second challenge countdown">
-            <span className="sixty-count">60</span><span className="sixty-count--secondary">45<br />30<br />10</span><span className="sixty-zero">0</span>
+          <div className="sixty-brand-block" aria-label="Unisky Pass built on Monad">
+            <div className="sixty-brand-lockup"><BrandMark className="sixty-unisky-mark" /><span>UNISKY PASS</span></div>
+            <div className="sixty-monad-lockup"><MonadMark className="sixty-monad-mark" /><span>BUILD ON MONAD</span></div>
+            <p className="technical-label">60 SEC / EIP-712 / LIVE CONTRACT READ</p>
+            <h2 id="sixty-title">One challenge.<br />One live proof.</h2>
           </div>
-          <div className="sixty-title"><p className="technical-label">SIXTY SECONDS</p><h2 id="sixty-title">A fresh answer<br />at the door.</h2></div>
           <div className="sixty-steps">
             {proofSteps.map(([number, title, description]) => <div className="sixty-step" key={number}><span className="sixty-step__number">{number}</span><div><h3>{title}</h3><p>{description}</p></div></div>)}
           </div>
