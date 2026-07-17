@@ -86,6 +86,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   --film-ink: var(--landing-ink);
   --film-paper: var(--landing-paper);
   --film-gray: var(--landing-gray);
+  --film-dark-gray: var(--landing-dark-gray);
   --film-signal: var(--landing-signal);
   position: relative;
   overflow: clip;
@@ -201,15 +202,20 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-scene--proof { background: var(--film-dark-gray); }
 .proof-scene__inner { min-height: 100svh; }
 .proof-coordinate { position: absolute; top: 8rem; right: clamp(1.25rem, 5vw, 6rem); color: var(--film-gray); }
-.proof-stem { position: absolute; top: 0; bottom: 0; left: 29%; width: 1px; background: var(--film-paper); opacity: 0.4; transform: scaleX(0); }
-.proof-plane { position: absolute; top: 20%; bottom: 10%; width: 32%; border: 1px solid color-mix(in srgb, var(--film-paper) 30%, transparent); color: var(--film-paper); }
-.proof-plane__mark { position: absolute; top: 50%; left: 50%; width: 4.5rem !important; height: 4.5rem !important; border-color: var(--lime) !important; background: var(--film-ink) !important; color: var(--lime) !important; box-shadow: 3px 3px 0 var(--film-signal) !important; transform: translate(-50%, -50%); }
-.proof-plane--one { left: 10%; }
-.proof-plane--two { right: 10%; color: var(--film-signal); }
-.proof-statement { position: absolute; right: 8%; bottom: 14%; z-index: 2; }
-.proof-statement h2, .proof-statement h3 { margin: 0; font-size: clamp(2.8rem, 7vw, 8rem); font-weight: 900; line-height: 0.85; letter-spacing: -0.08em; }
+.proof-stem { position: absolute; top: 0; bottom: 0; left: 34%; width: 1px; background: var(--film-paper); opacity: 0.28; transform: scaleX(0); }
+.proof-plane { position: absolute; top: 16%; bottom: 20%; width: min(29vw, 26rem); border: 1px solid color-mix(in srgb, var(--film-paper) 34%, transparent); color: var(--film-paper); }
+.proof-plane--one { left: 8%; }
+.proof-plane::before, .proof-plane::after { position: absolute; pointer-events: none; content: ""; }
+.proof-plane::before { inset: 1.25rem; border-top: 1px solid color-mix(in srgb, var(--film-paper) 22%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--film-paper) 22%, transparent); }
+.proof-plane::after { top: 50%; right: 1.25rem; left: 1.25rem; height: 1px; background: color-mix(in srgb, var(--film-paper) 16%, transparent); }
+.proof-mark-stack { position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; align-content: center; gap: 0.9rem; text-align: center; }
+.proof-plane__mark { width: 4.5rem !important; height: 4.5rem !important; border-color: var(--lime) !important; background: var(--film-ink) !important; color: var(--lime) !important; box-shadow: 3px 3px 0 var(--film-signal) !important; }
+.proof-mark-stack .technical-label { color: var(--film-gray); }
+.proof-mark-stack .mono-data { color: var(--film-signal); font-size: 0.62rem; letter-spacing: 0.1em; }
+.proof-statement { position: absolute; right: 6%; bottom: 17%; z-index: 2; width: min(57vw, 54rem); }
+.proof-statement h2, .proof-statement h3 { margin: 0; font-size: clamp(2.8rem, 5.4vw, 6.8rem); font-weight: 900; line-height: 0.88; letter-spacing: -0.04em; }
 .proof-statement h2 { color: var(--film-paper); }
-.proof-statement h3 { margin-top: 1.5rem; color: var(--film-signal); }
+.proof-statement h3 { margin-top: 1.35rem; color: var(--film-signal); }
 .proof-footer { position: absolute; right: clamp(1.25rem, 5vw, 6rem); bottom: 3rem; left: clamp(1.25rem, 5vw, 6rem); display: flex; justify-content: space-between; color: var(--film-gray); font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 0.64rem; letter-spacing: 0.1em; }
 
 .landing-scene--sixty { min-height: 195vh; color: var(--film-ink); background: var(--film-paper); }
@@ -306,12 +312,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .intro-rail { top: 10rem; bottom: 3rem; }
   .proof-coordinate { top: 6rem; right: 1.25rem; font-size: 0.56rem; }
   .landing-scene--proof { min-height: 118vh; }
-  .proof-plane { top: 17%; bottom: 42%; width: 40%; }
-  .proof-plane--one { left: 2%; }
-  .proof-plane--two { right: 2%; }
+  .proof-plane { top: 16%; bottom: 48%; left: 1.25rem; width: calc(100% - 2.5rem); }
+  .proof-plane--one { left: 1.25rem; }
+  .proof-mark-stack { gap: 0.65rem; }
   .proof-plane__mark { width: 3.25rem !important; height: 3.25rem !important; }
-  .proof-statement { right: 1.25rem; bottom: 8%; left: 1.25rem; padding-top: 0.9rem; background: var(--film-dark-gray); }
-  .proof-statement h2, .proof-statement h3 { font-size: clamp(2.25rem, 10.5vw, 4.3rem); line-height: 0.88; }
+  .proof-statement { right: 1.25rem; bottom: 8%; left: 1.25rem; width: auto; }
+  .proof-statement h2, .proof-statement h3 { font-size: clamp(2.1rem, 9.4vw, 4rem); line-height: 0.92; letter-spacing: -0.035em; }
   .proof-footer { right: 1.25rem; bottom: 2rem; left: 1.25rem; font-size: 0.52rem; }
   .sixty-header { top: 6rem; right: 1.25rem; left: 1.25rem; font-size: 0.54rem; }
   .sixty-brand-block { top: 20%; right: 1.25rem; left: 1.25rem; }

@@ -19,4 +19,9 @@
 | No horizontal overflow in reviewed scenes | Pass |
 | Browser console errors | Pass — none reported |
 
+Additional proof-scene checks:
+
+- The proof scene now uses one structured Unisky Pass panel with restrained measurement rails.
+- The headline is contained in one controlled editorial copy block; the old overlapping dual-frame composition is gone.
+
 Final result: passed

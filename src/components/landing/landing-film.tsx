@@ -101,7 +101,6 @@ export function LandingFilm() {
           });
           proof
             .fromTo(".proof-plane--one", { xPercent: -12, opacity: 0.2 }, { xPercent: 0, opacity: 1, ease: "none" }, 0)
-            .fromTo(".proof-plane--two", { xPercent: 14, opacity: 0.2 }, { xPercent: 0, opacity: 1, ease: "none" }, 0.1)
             .to(".proof-stem", { scaleX: 1, ease: "none" }, 0.25)
             .to(".proof-statement", { yPercent: -16, ease: "none" }, 0.42)
             .to(".proof-coordinate", { xPercent: -32, ease: "none" }, 0.52);
@@ -285,8 +284,13 @@ export function LandingFilm() {
         <div className="landing-scene__inner proof-scene__inner">
           <div className="proof-coordinate mono-data">0x8A1F…7C20 / 0x6346…4fF5 / 10143</div>
           <div className="proof-stem" aria-hidden="true" />
-          <div className="proof-plane proof-plane--one"><BrandMark className="proof-plane__mark" /></div>
-          <div className="proof-plane proof-plane--two"><BrandMark className="proof-plane__mark" /></div>
+          <div className="proof-plane proof-plane--one">
+            <div className="proof-mark-stack">
+              <BrandMark className="proof-plane__mark" />
+              <span className="technical-label">LIVE PROOF</span>
+              <span className="mono-data">NO CACHE / 60 SEC</span>
+            </div>
+          </div>
           <div className="proof-statement">
             <p className="technical-label">01 / INSIDE THE U</p>
             <h2 id="proof-title">A SCREENSHOT<br />CAN LOOK RIGHT.</h2>
