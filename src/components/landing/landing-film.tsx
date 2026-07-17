@@ -150,7 +150,6 @@ export function LandingFilm() {
           });
           registry
             .fromTo(".registry-row", { y: 70, opacity: 0.25 }, { y: 0, opacity: 1, stagger: 0.08, ease: "none" }, 0)
-            .to(".registry-u", { yPercent: -4, ease: "none" }, 0.25)
             .to(".registry-index", { xPercent: -16, ease: "none" }, 0.4)
             .to(".registry-rows", { yPercent: -35, ease: "none" }, 0.52)
             .to(".registry-summary", { opacity: 1, y: 0, ease: "none" }, 0.8);
@@ -286,8 +285,8 @@ export function LandingFilm() {
         <div className="landing-scene__inner proof-scene__inner">
           <div className="proof-coordinate mono-data">0x8A1F…7C20 / 0x6346…4fF5 / 10143</div>
           <div className="proof-stem" aria-hidden="true" />
-          <div className="proof-plane proof-plane--one"><span>U</span></div>
-          <div className="proof-plane proof-plane--two"><span>U</span></div>
+          <div className="proof-plane proof-plane--one"><BrandMark className="proof-plane__mark" /></div>
+          <div className="proof-plane proof-plane--two"><BrandMark className="proof-plane__mark" /></div>
           <div className="proof-statement">
             <p className="technical-label">01 / INSIDE THE U</p>
             <h2 id="proof-title">A SCREENSHOT<br />CAN LOOK RIGHT.</h2>
@@ -309,7 +308,7 @@ export function LandingFilm() {
           <div className="sixty-steps">
             {proofSteps.map(([number, title, description]) => <div className="sixty-step" key={number}><span className="sixty-step__number">{number}</span><div><h3>{title}</h3><p>{description}</p></div></div>)}
           </div>
-          <div className="sixty-payload mono-data">nonce: 0x4d3f…b18a&nbsp;&nbsp; expires: 60&nbsp;&nbsp; chainId: 143&nbsp;&nbsp; signer: holder</div>
+          <div className="sixty-payload mono-data">FRESH CHALLENGE&nbsp;&nbsp; / &nbsp;&nbsp;EIP-712&nbsp;&nbsp; / &nbsp;&nbsp;CHAIN 143&nbsp;&nbsp; / &nbsp;&nbsp;LIVE READ</div>
         </div>
       </section>
 
@@ -324,7 +323,6 @@ export function LandingFilm() {
 
       <section id="scene-registry" className="landing-scene landing-scene--registry" aria-labelledby="registry-title">
         <div className="landing-scene__inner registry-scene__inner">
-          <div className="registry-u" aria-hidden="true">U</div>
           <div className="registry-index"><p className="technical-label">03 / REGISTRY INDEX</p><h2 id="registry-title">THE RECORD<br />IS THE RECEIPT.</h2><span className="mono-data">UNISKY / 001</span></div>
           <div className="registry-rows">
             {registryRows.map(([label, value]) => <div className="registry-row" key={label}><span className="technical-label">{label}</span><strong className={label === "CONTRACT" ? "mono-data" : undefined}>{value}</strong><i aria-hidden="true" /></div>)}
@@ -346,7 +344,6 @@ export function LandingFilm() {
           <h2 id="finale-title">Carry less.<br />Prove more.<br />Belong anywhere.</h2>
           <div className="finale-actions"><Link href="/passes" className="landing-cta landing-cta--primary">OPEN MY PASSES <span>→</span></Link><Link href="/issuer" className="landing-cta landing-cta--secondary">LAUNCH A PROGRAM <span>→</span></Link></div>
           <a className="finale-contract mono-data" href="https://monadscan.com/address/0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5" target="_blank" rel="noreferrer">0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5 ↗ <span>MONADSCAN</span></a>
-          <div className="finale-u" aria-hidden="true">U</div>
         </div>
       </section>
     </div>
