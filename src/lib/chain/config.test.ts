@@ -20,7 +20,7 @@ describe("Monad deployment configuration", () => {
     expect(mainnet.rpcUrl).toBe("https://rpc.monad.xyz");
     expect(mainnet.explorerUrl).toBe("https://monadscan.com");
     expect(mainnet.contractAddress?.toLowerCase()).toBe(
-      "0x935d7681fd0454f38848925fc03d918da036ed99",
+      "0x634659d15a5a98d59ff06e9eb7dec08bd5894ff5",
     );
 
     expect(testnet).toBe(deploymentsByChain[MONAD_TESTNET_CHAIN_ID]);
@@ -28,7 +28,7 @@ describe("Monad deployment configuration", () => {
     expect(testnet.rpcUrl).toBe("https://testnet-rpc.monad.xyz");
     expect(testnet.explorerUrl).toBe("https://testnet.monadscan.com");
     expect(testnet.contractAddress?.toLowerCase()).toBe(
-      "0x7a2fdcaa6eac3a0c8e0e6e391ca9c7ef2b737690",
+      "0x56e47d0233b9eaa2f6701bb90dfd6352000d5e26",
     );
   });
 

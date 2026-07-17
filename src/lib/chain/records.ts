@@ -22,6 +22,8 @@ export type PassRecord = {
   validFrom: bigint;
   expiresAt: bigint;
   revoked: boolean;
+  memberLabel: string;
+  issuerNote: string;
 };
 
 export type MemberPass = {
@@ -77,6 +79,8 @@ export function normalizePass(value: unknown): PassRecord {
       validFrom: BigInt(value[4] as bigint),
       expiresAt: BigInt(value[5] as bigint),
       revoked: Boolean(value[6]),
+      memberLabel: String(value[7] ?? ""),
+      issuerNote: String(value[8] ?? ""),
     };
   }
   return value as PassRecord;

@@ -105,9 +105,9 @@ const deployments = [
     use: "Live product",
     chainId: "143",
     rpc: "https://rpc.monad.xyz",
-    address: "0x935D7681Fd0454f38848925fc03d918dA036Ed99",
+    address: "0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5",
     explorer:
-      "https://monadscan.com/address/0x935D7681Fd0454f38848925fc03d918dA036Ed99",
+      "https://monadscan.com/address/0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5",
     status: "Deployed, live, and source-code verified as an exact match (Solidity 0.8.28, optimizer 200).",
   },
   {
@@ -115,9 +115,9 @@ const deployments = [
     use: "Release rehearsal",
     chainId: "10143",
     rpc: "https://testnet-rpc.monad.xyz",
-    address: "0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690",
+    address: "0x56e47d0233b9eAa2f6701Bb90DFD6352000D5e26",
     explorer:
-      "https://testnet.monadscan.com/address/0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690",
+      "https://testnet.monadscan.com/address/0x56e47d0233b9eAa2f6701Bb90DFD6352000D5e26",
     status: "Testnet registry for the dry-run release path.",
   },
 ];

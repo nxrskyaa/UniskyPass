@@ -53,11 +53,11 @@ export function AppFooter() {
         <div className="flex flex-col gap-5 pt-7 text-xs text-white/60 lg:flex-row lg:items-center lg:justify-between">
           <p>© 2026 Unisky Pass. Built in public on Monad.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2 font-mono">
-            <a href="https://monadscan.com/address/0x935D7681Fd0454f38848925fc03d918dA036Ed99" target="_blank" rel="noreferrer" className="transition hover:text-lime">
-              MAINNET · 0x935D…Ed99 ↗
+            <a href="https://monadscan.com/address/0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5" target="_blank" rel="noreferrer" className="transition hover:text-lime">
+              MAINNET · 0x6346…4fF5 ↗
             </a>
-            <a href="https://testnet.monadscan.com/address/0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690" target="_blank" rel="noreferrer" className="transition hover:text-lime">
-              TESTNET · 0x7a2f…7690 ↗
+            <a href="https://testnet.monadscan.com/address/0x56e47d0233b9eAa2f6701Bb90DFD6352000D5e26" target="_blank" rel="noreferrer" className="transition hover:text-lime">
+              TESTNET · 0x56e4…5e26 ↗
             </a>
           </div>
         </div>

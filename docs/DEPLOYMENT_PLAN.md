@@ -19,8 +19,8 @@
 
 | Environment | Chain ID | Registry | RPC | Explorer |
 | --- | ---: | --- | --- | --- |
-| Testnet | `10143` | `0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690` | `https://testnet-rpc.monad.xyz` | `https://testnet.monadscan.com` |
-| Mainnet | `143` | `0x935D7681Fd0454f38848925fc03d918dA036Ed99` | `https://rpc.monad.xyz` | `https://monadscan.com` |
+| Testnet | `10143` | `0x56e47d0233b9eAa2f6701Bb90DFD6352000D5e26` | `https://testnet-rpc.monad.xyz` | `https://testnet.monadscan.com` |
+| Mainnet | `143` | `0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5` | `https://rpc.monad.xyz` | `https://monadscan.com` |
 
 Contract source identifier:
 
@@ -158,10 +158,10 @@ NEXT_PUBLIC_PRIVY_APP_ID=cmrojn0js00bg0djs58eirybr
 NEXT_PUBLIC_PRIVY_CLIENT_ID=
 NEXT_PUBLIC_MONAD_MAINNET_RPC_URL=https://rpc.monad.xyz
 NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL=https://monadscan.com
-NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS=0x935D7681Fd0454f38848925fc03d918dA036Ed99
+NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS=0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5
 NEXT_PUBLIC_MONAD_TESTNET_RPC_URL=https://testnet-rpc.monad.xyz
 NEXT_PUBLIC_MONAD_TESTNET_EXPLORER_URL=https://testnet.monadscan.com
-NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS=0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690
+NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS=0x56e47d0233b9eAa2f6701Bb90DFD6352000D5e26
 ```
 
 The Privy App ID and optional Client ID are public browser identifiers. Do not
@@ -314,10 +314,10 @@ NEXT_PUBLIC_PRIVY_APP_ID=cmrojn0js00bg0djs58eirybr
 NEXT_PUBLIC_PRIVY_CLIENT_ID=
 NEXT_PUBLIC_MONAD_MAINNET_RPC_URL=https://rpc.monad.xyz
 NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL=https://monadscan.com
-NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS=0x935D7681Fd0454f38848925fc03d918dA036Ed99
+NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS=0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5
 NEXT_PUBLIC_MONAD_TESTNET_RPC_URL=https://testnet-rpc.monad.xyz
 NEXT_PUBLIC_MONAD_TESTNET_EXPLORER_URL=https://testnet.monadscan.com
-NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS=0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690
+NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS=0x56e47d0233b9eAa2f6701Bb90DFD6352000D5e26
 ```
 
 If a variable already exists, update/remove-and-re-add it through the dashboard

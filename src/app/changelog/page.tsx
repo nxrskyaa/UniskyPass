@@ -36,9 +36,9 @@ const releases = [
     status: "AUTH",
     icon: KeyRound,
     accent: "bg-coral",
-    address: "0x935D7681Fd0454f38848925fc03d918dA036Ed99",
+    address: "0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5",
     explorer:
-      "https://monadscan.com/address/0x935D7681Fd0454f38848925fc03d918dA036Ed99",
+      "https://monadscan.com/address/0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5",
     summary:
       "Unisky Pass adds passwordless onboarding without changing the membership model: every issuer action, pass, and check-in proof still resolves to one active wallet address on Monad.",
     highlights: [
@@ -56,9 +56,9 @@ const releases = [
     status: "LIVE",
     icon: Rocket,
     accent: "bg-lime",
-    address: "0x935D7681Fd0454f38848925fc03d918dA036Ed99",
+    address: "0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5",
     explorer:
-      "https://monadscan.com/address/0x935D7681Fd0454f38848925fc03d918dA036Ed99",
+      "https://monadscan.com/address/0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5",
     summary:
       "The complete Unisky Pass MVP moved to Monad mainnet: issuer operations, member passes, and the challenge-sign-scan verification loop in one focused release.",
     highlights: [
@@ -76,9 +76,9 @@ const releases = [
     status: "TESTNET",
     icon: TestTube2,
     accent: "bg-sky",
-    address: "0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690",
+    address: "0x56e47d0233b9eAa2f6701Bb90DFD6352000D5e26",
     explorer:
-      "https://testnet.monadscan.com/address/0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690",
+      "https://testnet.monadscan.com/address/0x56e47d0233b9eAa2f6701Bb90DFD6352000D5e26",
     summary:
       "The final registry and frontend release path were staged on Monad testnet before production, keeping chain configuration and contract identity explicit throughout the flow.",
     highlights: [

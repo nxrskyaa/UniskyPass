@@ -8,7 +8,7 @@
   --line: #b8b8b2;
   --violet: #836ef9;
   --violet-dark: #5c48d2;
-  --lime: #836ef9;
+  --lime: #b9fa3b;
   --coral: #f27b68;
   --sky: #c6d8eb;
   --success: #16794f;
@@ -159,7 +159,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   text-transform: uppercase;
 }
 .landing-nav__brand { display: inline-flex; align-items: center; justify-self: start; gap: 0.6rem; font-family: var(--font-geist-sans), sans-serif; font-size: 0.82rem; font-weight: 900; letter-spacing: -0.04em; }
-.landing-brand-mark { width: 1.8rem !important; height: 1.8rem !important; border-color: color-mix(in srgb, var(--film-paper) 35%, transparent) !important; background: transparent !important; color: var(--film-paper) !important; box-shadow: none !important; }
+.landing-brand-mark { width: 1.8rem !important; height: 1.8rem !important; border-color: color-mix(in srgb, var(--lime) 55%, transparent) !important; background: var(--film-ink) !important; color: var(--lime) !important; box-shadow: 2px 2px 0 var(--film-signal) !important; }
 .landing-brand-mark svg { width: 1.35rem; height: 1.35rem; }
 .landing-nav__scenes { display: flex; align-items: center; gap: clamp(0.75rem, 2vw, 2rem); }
 .landing-nav__scenes a { position: relative; color: var(--film-gray); transition: color 180ms ease; }
@@ -181,10 +181,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-scene--intro { min-height: 190vh; background: var(--film-ink); }
 .intro-scene__inner { display: flex; flex-direction: column; justify-content: center; min-height: 100svh; }
 .intro-topline { position: absolute; top: 7rem; right: clamp(1.25rem, 5vw, 6rem); left: clamp(1.25rem, 5vw, 6rem); display: flex; justify-content: space-between; color: var(--film-gray); font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; }
-.intro-wordmark { display: flex; align-items: baseline; overflow: visible; margin: 0; white-space: nowrap; font-size: clamp(8rem, 29vw, 31rem); font-weight: 900; line-height: 0.72; letter-spacing: -0.105em; }
+.intro-wordmark { display: flex; align-items: baseline; overflow: visible; margin: 0; white-space: nowrap; font-size: clamp(8rem, 26vw, 28rem); font-weight: 900; line-height: 0.78; letter-spacing: -0.045em; }
 .intro-wordmark__u { position: relative; z-index: 2; display: inline-block; color: var(--film-paper); }
 .intro-wordmark__tail { display: inline-block; color: var(--film-paper); }
-.intro-counter { position: absolute; top: 50%; left: clamp(7rem, 18vw, 18rem); display: grid; width: clamp(8rem, 18vw, 20rem); aspect-ratio: 1; place-items: center; border: 1px solid color-mix(in srgb, var(--film-signal) 60%, transparent); color: var(--film-signal); opacity: 0; transform: translateY(-50%) scale(0.9); }
+.intro-counter { display: none; }
 .intro-counter span { font-size: clamp(4rem, 13vw, 13rem); font-weight: 900; line-height: 0.8; letter-spacing: -0.12em; }
 .intro-meta { position: absolute; right: clamp(1.25rem, 5vw, 6rem); opacity: 0; color: var(--film-gray); font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; }
 .intro-meta--one { top: 30%; }
@@ -219,12 +219,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .sixty-brand-block { position: absolute; top: 23%; right: 8%; left: 8%; z-index: 2; }
 .sixty-brand-lockup, .sixty-monad-lockup { display: flex; align-items: center; gap: 0.75rem; font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.12em; }
 .sixty-brand-lockup { color: var(--film-ink); }
-.sixty-unisky-mark { width: 2.35rem !important; height: 2.35rem !important; border-color: var(--film-ink) !important; background: var(--film-ink) !important; color: var(--film-paper) !important; box-shadow: 3px 3px 0 var(--film-signal) !important; }
+.sixty-unisky-mark { width: 2.35rem !important; height: 2.35rem !important; border-color: var(--film-ink) !important; background: var(--film-ink) !important; color: var(--lime) !important; box-shadow: 3px 3px 0 var(--film-signal) !important; }
 .sixty-unisky-mark svg { width: 1.65rem; height: 1.65rem; }
 .sixty-monad-lockup { margin-top: 2.75rem; color: var(--film-signal); }
 .sixty-monad-mark { width: 3.25rem; height: 2.5rem; }
 .sixty-brand-block > .technical-label { display: block; margin-top: 2.75rem; color: var(--film-gray); }
-.sixty-brand-block h2 { margin: 0.7rem 0 0; font-size: clamp(3.8rem, 8vw, 9rem); font-weight: 900; line-height: 0.82; letter-spacing: -0.1em; }
+.sixty-brand-block h2 { margin: 0.7rem 0 0; font-size: clamp(3.8rem, 8vw, 9rem); font-weight: 900; line-height: 0.88; letter-spacing: -0.055em; }
 .sixty-steps { position: absolute; right: 7%; bottom: 9%; left: 7%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; border-top: 1px solid var(--film-ink); }
 .sixty-step { display: grid; grid-template-columns: auto 1fr; gap: 1rem; min-height: 9rem; padding: 1rem 1rem 0 0; border-right: 1px solid var(--film-ink); opacity: 0.3; transform: translateY(70px); }
 .sixty-step:last-child { border-right: 0; }
@@ -236,7 +236,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-scene--loop { background: var(--film-ink); }
 .loop-scene__inner { min-height: 100svh; }
 .loop-screen { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 8rem clamp(1.25rem, 11vw, 13rem); }
-.loop-screen h2 { margin: 1rem 0 0; font-size: clamp(3rem, 9vw, 11rem); font-weight: 900; line-height: 0.8; letter-spacing: -0.1em; }
+.loop-screen h2 { margin: 1rem 0 0; font-size: clamp(3rem, 9vw, 11rem); font-weight: 900; line-height: 0.86; letter-spacing: -0.055em; }
 .loop-screen--issue { z-index: 3; color: var(--film-paper); background: var(--film-ink); }
 .loop-screen--carry { z-index: 2; color: var(--film-ink); background: var(--film-paper); }
 .loop-screen--prove { z-index: 1; color: var(--film-paper); background: var(--film-dark-gray); }
@@ -265,13 +265,13 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .climax-scene__inner { display: grid; place-items: center; min-height: 100svh; overflow: clip; }
 .climax-inner { text-align: center; transform-origin: center; }
 .climax-inner .technical-label { color: var(--film-ink); }
-.climax-copy { margin: 1.2rem 0 0; font-size: clamp(3.4rem, 10vw, 13rem); font-weight: 900; line-height: 0.76; letter-spacing: -0.14em; }
+.climax-copy { margin: 1.2rem 0 0; font-size: clamp(3.4rem, 10vw, 13rem); font-weight: 900; line-height: 0.82; letter-spacing: -0.075em; }
 .climax-mark { display: block; margin-top: 3rem; font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.18em; opacity: 0; }
 
 .landing-scene--finale { min-height: 150vh; background: var(--film-ink); }
 .finale-scene__inner { min-height: 100svh; padding-top: 10rem; }
 .finale-mark { margin-bottom: 5rem; color: var(--film-signal); font-family: var(--font-geist-sans), sans-serif; font-size: 1.1rem; font-weight: 900; letter-spacing: -0.05em; }
-.finale-scene__inner h2 { max-width: 52rem; margin: 1rem 0 3rem; color: var(--film-paper); font-size: clamp(3.4rem, 9vw, 11rem); font-weight: 900; line-height: 0.8; letter-spacing: -0.12em; }
+.finale-scene__inner h2 { max-width: 52rem; margin: 1rem 0 3rem; color: var(--film-paper); font-size: clamp(3.4rem, 9vw, 11rem); font-weight: 900; line-height: 0.86; letter-spacing: -0.065em; }
 .finale-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .landing-cta { display: inline-flex; min-width: 13rem; align-items: center; justify-content: space-between; gap: 2rem; padding: 1rem 1.1rem; border: 1px solid var(--film-paper); font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; transition: color 180ms ease, background-color 180ms ease; }
 .landing-cta span { font-size: 1.2rem; transition: transform 180ms ease; }
@@ -300,8 +300,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .landing-scene__inner { padding: 6rem 1.25rem 2.5rem; }
   .intro-topline { top: 6rem; right: 1.25rem; left: 1.25rem; font-size: 0.58rem; }
   .landing-scene--intro { min-height: 118vh; }
-  .intro-wordmark { font-size: clamp(5.4rem, 24vw, 9.5rem); letter-spacing: -0.13em; }
-  .intro-counter { top: 45%; left: 20%; width: 8rem; }
+  .intro-wordmark { font-size: clamp(4.8rem, 20vw, 8rem); line-height: 0.82; letter-spacing: -0.035em; }
+  .intro-counter { display: none; }
   .intro-meta { right: 1.25rem; font-size: 0.56rem; }
   .intro-copy { bottom: 5rem; left: 1.25rem; font-size: 0.57rem; }
   .intro-scroll { right: 1.25rem; bottom: 2.5rem; font-size: 0.55rem; }
@@ -321,7 +321,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .sixty-unisky-mark { width: 2rem !important; height: 2rem !important; }
   .sixty-monad-lockup { margin-top: 2.2rem; }
   .sixty-brand-block > .technical-label { margin-top: 2.1rem; font-size: 0.54rem; }
-  .sixty-brand-block h2 { font-size: clamp(2.8rem, 12.5vw, 5.2rem); line-height: 0.86; }
+  .sixty-brand-block h2 { font-size: clamp(2.8rem, 12.5vw, 5.2rem); line-height: 0.9; letter-spacing: -0.045em; }
   .sixty-steps { right: 1.25rem; bottom: 4%; left: 1.25rem; grid-template-columns: 1fr 1fr; }
   .sixty-step { min-height: 7.5rem; padding-right: 0.5rem; }
   .sixty-step:nth-child(2) { border-right: 0; }
@@ -330,7 +330,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .sixty-step p { font-size: 0.65rem; }
   .sixty-payload { top: 68%; left: -8%; font-size: 0.53rem; }
   .loop-screen { padding: 7rem 1.25rem; }
-  .loop-screen h2 { font-size: clamp(2.6rem, 13vw, 5rem); }
+  .loop-screen h2 { font-size: clamp(2.6rem, 13vw, 5rem); line-height: 0.9; letter-spacing: -0.04em; }
   .loop-index { right: 1.25rem; bottom: 8%; font-size: 4rem; }
   .loop-viewfinder { inset: 22% 1.25rem 12%; }
   .landing-scene--registry { min-height: 140vh; }
@@ -343,10 +343,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .registry-row .technical-label { font-size: 0.53rem; }
   .registry-summary { right: 1.25rem; bottom: 4%; left: 1.25rem; font-size: 0.53rem; line-height: 1.4; }
   .landing-scene--climax { min-height: 110vh; }
-  .climax-copy { white-space: nowrap; font-size: clamp(2.35rem, 9.4vw, 4.6rem); line-height: 0.88; letter-spacing: -0.09em; }
+  .climax-copy { white-space: nowrap; font-size: clamp(2.35rem, 9.4vw, 4.6rem); line-height: 0.92; letter-spacing: -0.045em; }
   .finale-scene__inner { padding-top: 8rem; }
   .finale-mark { margin-bottom: 4rem; }
-  .finale-scene__inner h2 { font-size: clamp(3.2rem, 15vw, 6rem); }
+  .finale-scene__inner h2 { font-size: clamp(3.2rem, 15vw, 6rem); line-height: 0.9; letter-spacing: -0.045em; }
   .landing-cta { min-width: 100%; }
   .finale-contract { max-width: 18rem; overflow-wrap: anywhere; }
 }

@@ -31,7 +31,7 @@ const registryRows = [
   ["PROOF", "EIP-712 · 60 SEC"],
   ["TRANSFER", "NONE"],
   ["CUSTODY", "NO APP-HELD FUNDS"],
-  ["CONTRACT", "0x935D7681Fd0454f38848925fc03d918dA036Ed99"],
+  ["CONTRACT", "0x6346…4fF5"],
   ["STATUS", "LIVE"],
 ] as const;
 
@@ -183,8 +183,8 @@ export function LandingFilm() {
                 ...markScene("intro"),
               },
             })
-            .to(".intro-wordmark__tail", { xPercent: 36, opacity: 0, ease: "none" }, 0)
-            .to(".intro-wordmark__u", { scale: 2.2, transformOrigin: "left center", ease: "none" }, 0.15);
+            .to(".intro-wordmark__tail", { xPercent: 0, opacity: 1, ease: "none" }, 0)
+            .to(".intro-wordmark__u", { scale: 1.06, xPercent: 0, transformOrigin: "left center", ease: "none" }, 0.2);
 
           ["proof", "sixty", "loop", "registry"].forEach((id) => {
             ScrollTrigger.create({
@@ -284,7 +284,7 @@ export function LandingFilm() {
 
       <section id="scene-proof" className="landing-scene landing-scene--proof" aria-labelledby="proof-title">
         <div className="landing-scene__inner proof-scene__inner">
-          <div className="proof-coordinate mono-data">0x8A1F…7C20 / 0x935D…ED99 / 10143</div>
+          <div className="proof-coordinate mono-data">0x8A1F…7C20 / 0x6346…4fF5 / 10143</div>
           <div className="proof-stem" aria-hidden="true" />
           <div className="proof-plane proof-plane--one"><span>U</span></div>
           <div className="proof-plane proof-plane--two"><span>U</span></div>
@@ -345,7 +345,7 @@ export function LandingFilm() {
           <p className="technical-label">THE APP / NOW OPEN</p>
           <h2 id="finale-title">Carry less.<br />Prove more.<br />Belong anywhere.</h2>
           <div className="finale-actions"><Link href="/passes" className="landing-cta landing-cta--primary">OPEN MY PASSES <span>→</span></Link><Link href="/issuer" className="landing-cta landing-cta--secondary">LAUNCH A PROGRAM <span>→</span></Link></div>
-          <a className="finale-contract mono-data" href="https://monadscan.com/address/0x935D7681Fd0454f38848925fc03d918dA036Ed99" target="_blank" rel="noreferrer">0x935D7681Fd0454f38848925fc03d918dA036Ed99 ↗ <span>MONADSCAN</span></a>
+          <a className="finale-contract mono-data" href="https://monadscan.com/address/0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5" target="_blank" rel="noreferrer">0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5 ↗ <span>MONADSCAN</span></a>
           <div className="finale-u" aria-hidden="true">U</div>
         </div>
       </section>

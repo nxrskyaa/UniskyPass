@@ -9,6 +9,13 @@ Both values are onchain and publicly readable. Do not put emails, phone numbers,
 
 V2 does not migrate V1 state. Existing V1 passes remain valid on V1; a V2 deployment starts with new issuer, program, and pass IDs from 1.
 
+## Current deployments
+
+| Network | Chain ID | Registry |
+| --- | ---: | --- |
+| Monad mainnet | `143` | `0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5` |
+| Monad testnet | `10143` | `0x56e47d0233b9eAa2f6701Bb90DFD6352000D5e26` |
+
 ## Deploy
 
 Set `DEPLOYER_PRIVATE_KEY` in the shell used by Foundry. Never put it in `NEXT_PUBLIC_*`, Vercel, source control, or the frontend.

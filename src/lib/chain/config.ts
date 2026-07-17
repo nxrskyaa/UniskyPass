@@ -25,9 +25,9 @@ export const SELECTED_NETWORK_STORAGE_KEY =
   "unisky-pass:selected-monad-network:v1";
 
 const CANONICAL_MAINNET_CONTRACT =
-  "0x935D7681Fd0454f38848925fc03d918dA036Ed99";
+  "0x634659d15A5a98D59ff06e9Eb7deC08bD5894fF5";
 const CANONICAL_TESTNET_CONTRACT =
-  "0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690";
+  "0x56e47d0233b9eAa2f6701Bb90DFD6352000D5e26";
 
 function readPublicValue(value: string | undefined) {
   return value?.trim() || undefined;
