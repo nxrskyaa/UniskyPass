@@ -65,12 +65,14 @@ The same wallet can still use My Passes.
 
 1. The issuer opens an active program and selects **Issue pass**.
 2. The issuer enters the holder wallet and chooses **start now** or a future
-   start time.
+   start time, then may add an optional public member label and issuer note.
 3. The app validates the address, rejects the zero address, normalizes/checksums
    it, and converts the date to Unix seconds.
 4. For **start now**, the app sends `validFrom = 0`. A scheduled start must not be
    in the past.
-5. The wallet submits `issuePass(programId, holder, validFrom)`.
+5. The wallet submits `issuePassWithDetails(programId, holder, validFrom,
+   memberLabel, issuerNote)`. Both text fields are public and bounded; they are
+   not legal identity fields.
 6. After confirmation, the issuer's list and the member's next read reflect the
    new pass. The app does not claim success from an optimistic draft alone.
 
@@ -81,8 +83,9 @@ The same wallet can still use My Passes.
 2. The app reads `getHolderPasses(holder)`.
 3. It batches `getPass` and `getProgram` reads through Multicall3 where useful.
 4. An empty array renders a friendly empty state, not an error.
-5. Each card shows issuer/program, validity range, and one of `NotStarted`,
-   `Active`, `Expired`, or `Revoked` based on chain state.
+5. Each card shows issuer/program, optional member label and issuer note,
+   validity range, and one of `NotStarted`, `Active`, `Expired`, or `Revoked`
+   based on chain state.
 6. A detail view exposes the pass ID and explorer links without crypto-heavy
    consumer copy.
 7. Only an `Active` pass matching the challenge issuer/program is eligible for a

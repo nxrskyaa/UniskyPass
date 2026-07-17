@@ -3,6 +3,7 @@ import type {
   LabelHTMLAttributes,
   HTMLAttributes,
   SelectHTMLAttributes,
+  TextareaHTMLAttributes,
 } from "react";
 import { cn } from "@/lib/cn";
 
@@ -20,6 +21,18 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
     <input
       className={cn(
         "min-h-12 w-full rounded-xl border border-line bg-white px-3.5 text-base text-ink shadow-[inset_0_1px_0_rgb(17_18_23/4%)] transition placeholder:text-ink-soft/55 hover:border-ink-soft focus:border-violet focus:outline-none focus:ring-4 focus:ring-violet/10",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return (
+    <textarea
+      className={cn(
+        "min-h-24 w-full resize-y rounded-xl border border-line bg-white px-3.5 py-3 text-base text-ink shadow-[inset_0_1px_0_rgb(17_18_23/4%)] transition placeholder:text-ink-soft/55 hover:border-ink-soft focus:border-violet focus:outline-none focus:ring-4 focus:ring-violet/10",
         className,
       )}
       {...props}

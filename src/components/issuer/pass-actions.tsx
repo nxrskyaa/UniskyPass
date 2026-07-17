@@ -2,23 +2,93 @@
 
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import * as Dialog from "@radix-ui/react-dialog";
-import { CalendarPlus, CircleAlert, Trash2, X } from "lucide-react";
+import { CalendarPlus, CircleAlert, Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FieldError, Input, Label } from "@/components/ui/field";
+import { FieldError, Input, Label, Textarea } from "@/components/ui/field";
 import { useContractMutation } from "@/hooks/use-contract-mutation";
-import { daysToSeconds, validateDurationDays } from "@/lib/validation/contract-forms";
+import { daysToSeconds, validateDurationDays, validateIssuerNote, validateMemberLabel } from "@/lib/validation/contract-forms";
 
-export function PassActions({ passId, revoked }: { passId: bigint; revoked: boolean }) {
+export function PassActions({ passId, revoked, initialMemberLabel, initialIssuerNote }: { passId: bigint; revoked: boolean; initialMemberLabel: string; initialIssuerNote: string }) {
   const [extendOpen, setExtendOpen] = useState(false);
   const [revokeOpen, setRevokeOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [memberLabel, setMemberLabel] = useState(initialMemberLabel);
+  const [issuerNote, setIssuerNote] = useState(initialIssuerNote);
   const [days, setDays] = useState(30);
   const [error, setError] = useState<string>();
+  const detailsMutation = useContractMutation();
   const extendMutation = useContractMutation();
   const revokeMutation = useContractMutation();
 
   return (
     <div className="flex flex-wrap gap-1.5">
+      <Dialog.Root
+        open={detailsOpen}
+        onOpenChange={(open) => {
+          setDetailsOpen(open);
+          if (open) {
+            setMemberLabel(initialMemberLabel);
+            setIssuerNote(initialIssuerNote);
+            setError(undefined);
+          }
+        }}
+      >
+        <Dialog.Trigger asChild>
+          <Button size="sm" variant="quiet" disabled={revoked}>
+            <Pencil className="size-3.5" /> Details
+          </Button>
+        </Dialog.Trigger>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/75" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-ink bg-paper p-5 shadow-[6px_6px_0_var(--violet)]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <Dialog.Title className="text-xl font-black tracking-tight">Edit pass #{passId.toString()}</Dialog.Title>
+                <Dialog.Description className="mt-2 text-sm leading-6 text-ink-soft">These fields are public on Monad. Keep them short and non-sensitive.</Dialog.Description>
+              </div>
+              <Dialog.Close className="rounded-lg p-2 hover:bg-white" aria-label="Close"><X className="size-4" /></Dialog.Close>
+            </div>
+            <form
+              className="mt-5 grid gap-4"
+              onSubmit={async (event) => {
+                event.preventDefault();
+                const labelError = validateMemberLabel(memberLabel);
+                const noteError = validateIssuerNote(issuerNote);
+                const validationError = labelError ?? noteError;
+                setError(validationError);
+                if (validationError) return;
+                try {
+                  await detailsMutation.execute({
+                    functionName: "updatePassDetails",
+                    args: [passId, memberLabel.trim(), issuerNote.trim()],
+                    pendingTitle: "Updating pass details",
+                    successTitle: "Pass details updated",
+                  });
+                  setDetailsOpen(false);
+                } catch {
+                  // The mutation hook owns user-facing feedback.
+                }
+              }}
+            >
+              <div>
+                <Label htmlFor={`member-label-${passId}`}>Member label <span className="font-normal text-ink-soft">(optional)</span></Label>
+                <Input id={`member-label-${passId}`} value={memberLabel} onChange={(event) => setMemberLabel(event.target.value)} maxLength={64} autoComplete="off" />
+              </div>
+              <div>
+                <Label htmlFor={`issuer-note-${passId}`}>Issuer note <span className="font-normal text-ink-soft">(optional)</span></Label>
+                <Textarea id={`issuer-note-${passId}`} value={issuerNote} onChange={(event) => setIssuerNote(event.target.value)} maxLength={160} />
+              </div>
+              <FieldError id={`details-error-${passId}`}>{error ?? detailsMutation.lastError}</FieldError>
+              <div className="flex justify-end gap-2">
+                <Dialog.Close asChild><Button variant="quiet">Cancel</Button></Dialog.Close>
+                <Button type="submit" disabled={detailsMutation.isPending}>{detailsMutation.isPending ? "Confirming…" : "Save details"}</Button>
+              </div>
+            </form>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
       <Dialog.Root open={extendOpen} onOpenChange={setExtendOpen}>
         <Dialog.Trigger asChild>
           <Button size="sm" variant="quiet" disabled={revoked}>

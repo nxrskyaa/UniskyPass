@@ -4,18 +4,22 @@ import { Send } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
-import { FieldError, Input, Label, Select } from "@/components/ui/field";
+import { FieldError, Input, Label, Select, Textarea } from "@/components/ui/field";
 import { useContractMutation } from "@/hooks/use-contract-mutation";
 import type { IssuerProgram } from "@/lib/chain/records";
 import {
   parseHolderAddress,
   parseScheduledStart,
+  validateIssuerNote,
+  validateMemberLabel,
 } from "@/lib/validation/contract-forms";
 
 export function IssuePassForm({ programs }: { programs: IssuerProgram[] }) {
   const activePrograms = useMemo(() => programs.filter(({ program }) => program.active), [programs]);
   const [programId, setProgramId] = useState(activePrograms[0]?.id.toString() ?? "");
   const [holder, setHolder] = useState("");
+  const [memberLabel, setMemberLabel] = useState("");
+  const [issuerNote, setIssuerNote] = useState("");
   const [startMode, setStartMode] = useState<"now" | "scheduled">("now");
   const [scheduledAt, setScheduledAt] = useState("");
   const [error, setError] = useState<string>();
@@ -53,15 +57,27 @@ export function IssuePassForm({ programs }: { programs: IssuerProgram[] }) {
                 setError("Choose an active program.");
                 return;
               }
+              const labelError = validateMemberLabel(memberLabel);
+              if (labelError) {
+                setError(labelError);
+                return;
+              }
+              const noteError = validateIssuerNote(issuerNote);
+              if (noteError) {
+                setError(noteError);
+                return;
+              }
               setError(undefined);
               try {
                 await mutation.execute({
-                  functionName: "issuePass",
-                  args: [BigInt(selectedProgramId), addressResult.address, startResult.timestamp],
+                  functionName: "issuePassWithDetails",
+                  args: [BigInt(selectedProgramId), addressResult.address, startResult.timestamp, memberLabel.trim(), issuerNote.trim()],
                   pendingTitle: "Issuing membership pass",
                   successTitle: "Membership pass issued",
                 });
                 setHolder("");
+                setMemberLabel("");
+                setIssuerNote("");
                 setScheduledAt("");
                 setStartMode("now");
               } catch {
@@ -78,6 +94,16 @@ export function IssuePassForm({ programs }: { programs: IssuerProgram[] }) {
             <div>
               <Label htmlFor="holder-wallet">Holder wallet address</Label>
               <Input id="holder-wallet" aria-describedby="issue-pass-error" aria-invalid={Boolean(error ?? mutation.lastError)} value={holder} onChange={(event) => setHolder(event.target.value)} placeholder="0x…" autoComplete="off" spellCheck={false} className="font-mono text-sm" />
+            </div>
+            <div>
+              <Label htmlFor="member-label">Member label <span className="font-normal text-ink-soft">(public, optional)</span></Label>
+              <Input id="member-label" aria-describedby="member-label-help issue-pass-error" aria-invalid={Boolean(error ?? mutation.lastError)} value={memberLabel} onChange={(event) => setMemberLabel(event.target.value)} placeholder="e.g. Founding member" maxLength={64} autoComplete="off" />
+              <p id="member-label-help" className="mt-1.5 text-xs leading-5 text-ink-soft">Shown on the pass. Use a short label, not legal or sensitive identity data.</p>
+            </div>
+            <div>
+              <Label htmlFor="issuer-note">Issuer note <span className="font-normal text-ink-soft">(public, optional)</span></Label>
+              <Textarea id="issuer-note" aria-describedby="issuer-note-help issue-pass-error" aria-invalid={Boolean(error ?? mutation.lastError)} value={issuerNote} onChange={(event) => setIssuerNote(event.target.value)} placeholder="e.g. Morning access · paid in full" maxLength={160} />
+              <p id="issuer-note-help" className="mt-1.5 text-xs leading-5 text-ink-soft">A visible operational note for this pass. Keep it short and non-sensitive.</p>
             </div>
             <fieldset>
               <legend className="mb-2 text-sm font-semibold">Pass starts</legend>

@@ -28,12 +28,14 @@ export function IssuedPassList({ passes }: { passes: IssuedPass[] }) {
                 <tr key={item.id.toString()} className="transition hover:bg-paper/65">
                   <td className="px-5 py-4">
                     <p className="font-bold">{item.programName}</p>
+                    {item.pass.memberLabel ? <p className="mt-1 font-semibold text-violet">{item.pass.memberLabel}</p> : null}
+                    {item.pass.issuerNote ? <p className="mt-1 max-w-[16rem] text-xs leading-5 text-ink-soft">{item.pass.issuerNote}</p> : null}
                     <p className="mt-1 font-mono text-xs text-ink-soft">#{item.id.toString()}</p>
                   </td>
                   <td className="px-5 py-4 font-mono">{shortenAddress(item.pass.holder, 5)}</td>
                   <td className="px-5 py-4"><StatusBadge status={item.status} /></td>
                   <td className="px-5 py-4 whitespace-nowrap">{formatDate(item.pass.expiresAt)}</td>
-                  <td className="px-5 py-4"><PassActions passId={item.id} revoked={item.pass.revoked} /></td>
+                  <td className="px-5 py-4"><PassActions passId={item.id} revoked={item.pass.revoked} initialMemberLabel={item.pass.memberLabel} initialIssuerNote={item.pass.issuerNote} /></td>
                 </tr>
               ))}
             </tbody>

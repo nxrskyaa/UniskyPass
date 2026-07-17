@@ -68,7 +68,7 @@ const issuerSteps = [
   {
     title: "Issue to the correct wallet",
     description:
-      "Paste and verify the member's wallet address, then issue immediately or schedule a future start. Onchain issuance is permanent and public.",
+      "Paste and verify the member's wallet address, add an optional public member label and issuer note, then issue immediately or schedule a future start. Onchain issuance is permanent and public.",
   },
   {
     title: "Run Scanner Mode",

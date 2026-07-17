@@ -14,6 +14,7 @@ export function PassCard({ item }: { item: MemberPass }) {
           <span className="font-mono text-xs font-semibold text-ink-soft">#{item.id.toString()}</span>
         </div>
         <h2 className="mt-6 text-2xl font-black tracking-[-0.045em]">{item.program.name}</h2>
+        {item.pass.memberLabel ? <p className="mt-1 text-sm font-semibold text-violet">{item.pass.memberLabel}</p> : null}
         <p className="mt-1 flex items-center gap-1.5 text-sm text-ink-soft">
           <Fingerprint className="size-4" aria-hidden />
           Issued by <span className="font-mono">{shortenAddress(item.pass.issuer)}</span>
@@ -25,6 +26,12 @@ export function PassCard({ item }: { item: MemberPass }) {
             <span className="ml-auto font-semibold">{formatDate(item.pass.expiresAt)}</span>
           </div>
         </div>
+        {item.pass.issuerNote ? (
+          <div className="mt-4 border-l-2 border-violet bg-paper px-3 py-2.5 text-sm leading-5 text-ink-soft">
+            <p className="font-mono text-[0.62rem] font-bold tracking-[0.12em] text-violet uppercase">Issuer note</p>
+            <p className="mt-1">{item.pass.issuerNote}</p>
+          </div>
+        ) : null}
         <Link
           href={`/passes/${item.id.toString()}`}
           className="mt-5 flex min-h-11 items-center justify-between border border-line bg-paper px-3.5 text-sm font-bold transition group-hover:border-ink group-hover:bg-lime"

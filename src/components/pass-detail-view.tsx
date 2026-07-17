@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, CalendarDays, Fingerprint, QrCode, Store, Wallet } from "lucide-react";
+import { ArrowLeft, CalendarDays, Fingerprint, QrCode, Store, StickyNote, Tag, Wallet } from "lucide-react";
 import { useAccount } from "wagmi";
 import { CopyButton } from "@/components/copy-button";
 import { EmptyState } from "@/components/empty-state";
@@ -85,6 +85,7 @@ export function PassDetailView({ passId }: { passId: string }) {
               <div>
                 <p className="font-mono text-xs font-bold tracking-[0.16em] text-lime uppercase">Unisky Pass · #{item.id.toString()}</p>
                 <h1 className="mt-4 text-4xl font-black tracking-[-0.055em] sm:text-5xl">{item.program.name}</h1>
+                {item.pass.memberLabel ? <p className="mt-3 flex items-center gap-2 text-sm font-semibold text-lime"><Tag className="size-4" aria-hidden /> {item.pass.memberLabel}</p> : null}
               </div>
               <StatusBadge status={item.status} className="bg-white" />
             </div>
@@ -122,6 +123,12 @@ export function PassDetailView({ passId }: { passId: string }) {
                 <p className="mt-2 text-sm text-ink-soft">This pass can never move to another wallet.</p>
               </div>
             </div>
+            {item.pass.issuerNote ? (
+              <div className="mt-7 border-l-2 border-violet bg-paper px-4 py-3">
+                <p className="flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-violet uppercase"><StickyNote className="size-4" aria-hidden /> Issuer note</p>
+                <p className="mt-2 text-sm leading-6 text-ink-soft">{item.pass.issuerNote}</p>
+              </div>
+            ) : null}
             <div className="mt-7 flex flex-wrap gap-3 border-t border-line pt-6">
               {item.status === 2 ? (
                 <Link

@@ -1,6 +1,8 @@
 import { getAddress, isAddress, type Address } from "viem";
 
 const MAX_NAME_BYTES = 64;
+export const MAX_MEMBER_LABEL_BYTES = 64;
+export const MAX_ISSUER_NOTE_BYTES = 160;
 const MAX_DURATION_DAYS = 3_650;
 
 export function validateDisplayName(value: string) {
@@ -9,6 +11,20 @@ export function validateDisplayName(value: string) {
   if (bytes === 0) return "Enter a name.";
   if (bytes > MAX_NAME_BYTES) return "Keep the name at 64 bytes or fewer.";
   return undefined;
+}
+
+function validateOptionalPublicText(value: string, maxBytes: number, label: string) {
+  const bytes = new TextEncoder().encode(value.trim()).length;
+  if (bytes > maxBytes) return `${label} must be ${maxBytes} bytes or fewer.`;
+  return undefined;
+}
+
+export function validateMemberLabel(value: string) {
+  return validateOptionalPublicText(value, MAX_MEMBER_LABEL_BYTES, "Member label");
+}
+
+export function validateIssuerNote(value: string) {
+  return validateOptionalPublicText(value, MAX_ISSUER_NOTE_BYTES, "Issuer note");
 }
 
 export function validateDurationDays(value: number) {
