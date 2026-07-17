@@ -63,7 +63,8 @@ does not need extra abstraction layers.
 | Active scanner challenge | React memory | Current scanner page | Match exactly, but validate every field |
 | Used challenge nonces | `sessionStorage` and memory | Current tab session | Local replay control only; not global truth |
 | Draft form values / UI preferences | memory or `localStorage` | Local/browser-defined | Never proof of authority or validity |
-| Chain, RPC, explorer, contract address | `NEXT_PUBLIC_*` build/runtime environment | Deployment | Validate as one coherent configuration |
+| Selected chain | React context plus validated `localStorage` preference | Browser | UI preference only; wallet must still match |
+| Chain, RPC, explorer, contract address | Immutable chain-keyed deployment map built from public configuration | Deployment | Resolve together; never mix fields across chains |
 | Deployer key | Human's local Foundry process environment | Deployment command only | Secret; never available to frontend/Vercel |
 
 All browser input, storage, QR content, wallet state, and RPC responses cross a
@@ -78,10 +79,16 @@ trust boundary. The scanner validates structure and binding before using them.
 | Explorer | `https://testnet.monadscan.com` | `https://monadscan.com` |
 | Native currency | MON, 18 decimals | MON, 18 decimals |
 
-Use `monad` and `monadTestnet` from the installed viem/wagmi package when
-available. Otherwise define them with these exact values. All four public
-environment values must point to the same network and deployment. Wrong-network
-state blocks signatures and writes rather than silently switching semantics.
+Use `monad` and `monadTestnet` from the installed viem/wagmi package. The app
+keeps one deployment object per chain containing its chain definition, RPC,
+explorer, and `UniskyPassRegistry` address. The selected deployment drives reads,
+writes, query keys, explorer links, and check-in domains. A connected wallet must
+match the selected chain; wrong-network state blocks reads, signatures, and
+writes rather than silently mixing semantics.
+
+The network selector stores only a preference in browser storage. Changing it
+switches the connected wallet first, then clears network-scoped query/UI state.
+If the wallet rejects the switch, the prior deployment remains selected.
 
 Multicall3-backed reads use the chain's declared canonical deployment. On Monad
 mainnet the canonical address is
@@ -132,7 +139,7 @@ The check-in path is client-side and has no member transaction:
 1. `crypto.getRandomValues` creates a 32-byte nonce.
 2. The QR module emits compact JSON encoded as base64url with prefix `usp1.`.
 3. The member signs EIP-712 primary type `CheckInProof`, domain-bound to the
-   configured chain and `UniskyPassRegistry` address.
+   selected deployment's chain and `UniskyPassRegistry` address.
 4. The response carries the original challenge, pass, holder, and signature.
 5. A single verification pipeline applies schema, session, replay, time, issuer,
    signature, signer, and fresh contract checks in that order.
@@ -170,8 +177,10 @@ trust boundaries and may observe network metadata.
 3. A human uses their own local `DEPLOYER_PRIVATE_KEY` to deploy the unchanged
    contract to mainnet.
 4. The verification script posts Foundry artifacts to the Monad verification API.
-5. Vercel production receives only the four `NEXT_PUBLIC_*` mainnet values.
-6. The mainnet production URL completes the same smoke test.
+5. Vercel receives the public deployment values for both networks; Preview
+   defaults to testnet and Production defaults to mainnet.
+6. The production URL completes the same smoke test on mainnet, then verifies
+   that switching to testnet exposes only testnet state.
 
 There is no automated mainnet key custody and no server component that can alter
 contract state on a user's behalf.

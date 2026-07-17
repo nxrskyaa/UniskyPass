@@ -8,16 +8,16 @@
 - A human deploys mainnet using their own key in their local Foundry process.
 - The deployer key is never committed, pasted into application files, prefixed
   `NEXT_PUBLIC_`, imported by Next.js, or configured in Vercel.
-- Vercel receives only the public RPC, chain ID, verified contract address, and
-  explorer URL.
+- Vercel receives only the public default chain plus the RPC, explorer, and
+  verified contract address for each supported network.
 - The frontend is deployed only after the contract address is known and verified.
 
 ## Network values
 
-| Environment | Chain ID | RPC | Explorer |
-| --- | ---: | --- | --- |
-| Testnet | `10143` | `https://testnet-rpc.monad.xyz` | `https://testnet.monadscan.com` |
-| Mainnet | `143` | `https://rpc.monad.xyz` | `https://monadscan.com` |
+| Environment | Chain ID | Registry | RPC | Explorer |
+| --- | ---: | --- | --- | --- |
+| Testnet | `10143` | `0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690` | `https://testnet-rpc.monad.xyz` | `https://testnet.monadscan.com` |
+| Mainnet | `143` | `0x935D7681Fd0454f38848925fc03d918dA036Ed99` | `https://rpc.monad.xyz` | `https://monadscan.com` |
 
 Contract source identifier:
 
@@ -139,15 +139,19 @@ Set-Location ..
 
 Record that fallback was needed and verify the explorer result manually.
 
-## Stage 4 — Local testnet configuration
+## Stage 4 — Local dual-network configuration
 
-Create `.env.local` from the committed example and set the verified address:
+Create `.env.local` from the committed example. Configure both verified
+deployments and choose testnet as the initial local default:
 
 ```dotenv
-NEXT_PUBLIC_MONAD_RPC_URL=https://testnet-rpc.monad.xyz
-NEXT_PUBLIC_MONAD_CHAIN_ID=10143
-NEXT_PUBLIC_UNISKY_PASS_CONTRACT_ADDRESS=0xDEPLOYED_TESTNET_ADDRESS
-NEXT_PUBLIC_BLOCK_EXPLORER_URL=https://testnet.monadscan.com
+NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID=10143
+NEXT_PUBLIC_MONAD_MAINNET_RPC_URL=https://rpc.monad.xyz
+NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL=https://monadscan.com
+NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS=0x935D7681Fd0454f38848925fc03d918dA036Ed99
+NEXT_PUBLIC_MONAD_TESTNET_RPC_URL=https://testnet-rpc.monad.xyz
+NEXT_PUBLIC_MONAD_TESTNET_EXPLORER_URL=https://testnet.monadscan.com
+NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS=0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690
 ```
 
 Do not put `DEPLOYER_PRIVATE_KEY` in `.env.local`. Rebuild after changing public
@@ -172,14 +176,17 @@ Add or update these **Preview** environment variables through the Vercel
 dashboard or the interactive CLI:
 
 ```powershell
-npx vercel env add NEXT_PUBLIC_MONAD_RPC_URL preview
-npx vercel env add NEXT_PUBLIC_MONAD_CHAIN_ID preview
-npx vercel env add NEXT_PUBLIC_UNISKY_PASS_CONTRACT_ADDRESS preview
-npx vercel env add NEXT_PUBLIC_BLOCK_EXPLORER_URL preview
+npx vercel env add NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID preview
+npx vercel env add NEXT_PUBLIC_MONAD_MAINNET_RPC_URL preview
+npx vercel env add NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL preview
+npx vercel env add NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS preview
+npx vercel env add NEXT_PUBLIC_MONAD_TESTNET_RPC_URL preview
+npx vercel env add NEXT_PUBLIC_MONAD_TESTNET_EXPLORER_URL preview
+npx vercel env add NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS preview
 ```
 
-Enter the four testnet values from Stage 4. Never add the deployer key. Create an
-HTTPS preview:
+Enter the seven public values from Stage 4, keeping `10143` as the Preview
+default. Never add the deployer key. Create an HTTPS preview:
 
 ```powershell
 npx vercel
@@ -251,19 +258,25 @@ Do not configure production with an unverified or mismatched address.
 Add or replace these **Production** environment variables:
 
 ```powershell
-npx vercel env add NEXT_PUBLIC_MONAD_RPC_URL production
-npx vercel env add NEXT_PUBLIC_MONAD_CHAIN_ID production
-npx vercel env add NEXT_PUBLIC_UNISKY_PASS_CONTRACT_ADDRESS production
-npx vercel env add NEXT_PUBLIC_BLOCK_EXPLORER_URL production
+npx vercel env add NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID production
+npx vercel env add NEXT_PUBLIC_MONAD_MAINNET_RPC_URL production
+npx vercel env add NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL production
+npx vercel env add NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS production
+npx vercel env add NEXT_PUBLIC_MONAD_TESTNET_RPC_URL production
+npx vercel env add NEXT_PUBLIC_MONAD_TESTNET_EXPLORER_URL production
+npx vercel env add NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS production
 ```
 
 Values:
 
 ```dotenv
-NEXT_PUBLIC_MONAD_RPC_URL=https://rpc.monad.xyz
-NEXT_PUBLIC_MONAD_CHAIN_ID=143
-NEXT_PUBLIC_UNISKY_PASS_CONTRACT_ADDRESS=0xVERIFIED_MAINNET_ADDRESS
-NEXT_PUBLIC_BLOCK_EXPLORER_URL=https://monadscan.com
+NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID=143
+NEXT_PUBLIC_MONAD_MAINNET_RPC_URL=https://rpc.monad.xyz
+NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL=https://monadscan.com
+NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS=0x935D7681Fd0454f38848925fc03d918dA036Ed99
+NEXT_PUBLIC_MONAD_TESTNET_RPC_URL=https://testnet-rpc.monad.xyz
+NEXT_PUBLIC_MONAD_TESTNET_EXPLORER_URL=https://testnet.monadscan.com
+NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS=0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690
 ```
 
 If a variable already exists, update/remove-and-re-add it through the dashboard
@@ -287,6 +300,8 @@ Against the production URL and mainnet verified contract:
 - confirm same-session replay rejection;
 - confirm a fresh read catches revocation after signing;
 - exercise a distinct invalid-signature or wrong-wallet result;
+- switch to testnet and confirm the address, explorer, passes, programs, queries,
+  and QR domain all switch together, then return to mainnet;
 - check real-phone camera permissions and scan reliability; and
 - confirm UI/security copy states session-only replay and wallet-sharing limits.
 
@@ -305,8 +320,9 @@ still point to the intended verified contract/network. Re-run the smoke test.
 
 `UniskyPassRegistry` cannot be paused globally, upgraded, or rolled back. Do not
 advertise a failed/unverified deployment. A replacement deployment is a new
-address and requires human approval, source verification, all four environment
-updates, a new Vercel deployment, and complete smoke testing.
+address and requires human approval, source verification, the relevant
+chain-keyed environment update, a new Vercel deployment, and complete smoke
+testing.
 
 ### RPC or explorer
 

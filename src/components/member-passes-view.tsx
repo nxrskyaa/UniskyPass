@@ -4,21 +4,20 @@ import Link from "next/link";
 import { RefreshCw, ScanLine, WalletCards } from "lucide-react";
 import { useAccount } from "wagmi";
 import { ContractSetupNotice } from "@/components/contract-setup-notice";
+import { useNetwork } from "@/components/network-provider";
 import { EmptyState } from "@/components/empty-state";
 import { LoadingCards } from "@/components/loading-cards";
 import { PageIntro } from "@/components/page-intro";
 import { PassCard } from "@/components/pass-card";
 import { Button } from "@/components/ui/button";
 import { WalletButton } from "@/components/wallet-button";
-import {
-  contractAddress,
-  expectedChainId,
-  networkConfigurationError,
-} from "@/lib/chain/config";
 import { useMemberPasses } from "@/hooks/use-member-passes";
 
 export function MemberPassesView() {
   const { address, isConnected, chainId } = useAccount();
+  const { deployment, selectedChainId } = useNetwork();
+  const contractAddress = deployment.contractAddress;
+  const networkConfigurationError = deployment.configurationError;
   const passes = useMemberPasses(address);
 
   return (
@@ -57,10 +56,10 @@ export function MemberPassesView() {
               title="Network configuration is invalid"
               description={networkConfigurationError}
             />
-          ) : chainId !== expectedChainId ? (
+          ) : chainId !== selectedChainId ? (
             <EmptyState
               title="Switch to the required network"
-              description="Use the network prompt at the top of the page, then your passes will load automatically."
+              description={`Switch your wallet to ${deployment.chain.name}, then your passes will load automatically.`}
             />
           ) : !contractAddress ? (
             <EmptyState

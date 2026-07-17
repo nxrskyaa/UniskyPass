@@ -24,13 +24,19 @@ export function WalletButton() {
           {isConnected && address ? (
             <>
               <span className="size-2 rounded-full bg-success" aria-hidden />
-              <span className="font-mono">{shortenAddress(address)}</span>
+              <span className="hidden font-mono min-[400px]:inline">
+                {shortenAddress(address)}
+              </span>
+              <span className="sr-only min-[400px]:hidden">
+                Connected wallet {address}
+              </span>
               <ChevronDown className="size-4" aria-hidden />
             </>
           ) : (
             <>
               <PlugZap className="size-4" aria-hidden />
-              Connect wallet
+              <span className="hidden min-[400px]:inline">Connect wallet</span>
+              <span className="sr-only min-[400px]:hidden">Connect wallet</span>
             </>
           )}
         </Button>

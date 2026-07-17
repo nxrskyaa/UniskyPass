@@ -6,6 +6,7 @@ import { useAccount, useSignTypedData } from "wagmi";
 import { ContractSetupNotice } from "@/components/contract-setup-notice";
 import { Countdown } from "@/components/countdown";
 import { EmptyState } from "@/components/empty-state";
+import { useNetwork } from "@/components/network-provider";
 import { PageIntro } from "@/components/page-intro";
 import { QrCodeDisplay } from "@/components/qr-code-display";
 import { QrScanner } from "@/components/qr-scanner";
@@ -15,11 +16,6 @@ import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Select } from "@/components/ui/field";
 import { WalletButton } from "@/components/wallet-button";
 import { buildCheckInTypedData, CHECK_IN_FAILURE_MESSAGES } from "@/lib/checkin";
-import {
-  contractAddress,
-  expectedChainId,
-  networkConfigurationError,
-} from "@/lib/chain/config";
 import { explainWalletError } from "@/lib/chain/errors";
 import { formatDate } from "@/lib/chain/format";
 import { decodeCheckInChallenge, encodeCheckInResponse } from "@/lib/qr";
@@ -28,6 +24,9 @@ import type { CheckInChallenge } from "@/types/checkin";
 
 export function MemberCheckInView({ preferredPassId }: { preferredPassId?: string }) {
   const { address, isConnected, chainId } = useAccount();
+  const { deployment, selectedChainId } = useNetwork();
+  const contractAddress = deployment.contractAddress;
+  const networkConfigurationError = deployment.configurationError;
   const passes = useMemberPasses(address);
   const signMutation = useSignTypedData();
   const [challenge, setChallenge] = useState<CheckInChallenge>();
@@ -71,8 +70,8 @@ export function MemberCheckInView({ preferredPassId }: { preferredPassId?: strin
             <EmptyState title="Connect the pass holder wallet" description="The signature must come from the same wallet that holds the membership pass." action={<WalletButton />} />
           ) : networkConfigurationError ? (
             <EmptyState title="Network configuration is invalid" description={networkConfigurationError} />
-          ) : chainId !== expectedChainId ? (
-            <EmptyState title="Wrong network" description="Switch to the network shown above before scanning a challenge." />
+          ) : chainId !== selectedChainId ? (
+            <EmptyState title="Wrong network" description={`Switch your wallet to ${deployment.chain.name} before scanning a challenge.`} />
           ) : !contractAddress ? (
             <EmptyState title="Check-in is waiting for the contract deployment" description="A registry address must be configured so the QR proof can bind to the correct contract." />
           ) : responsePayload && challenge && chosenPass ? (
@@ -111,7 +110,7 @@ export function MemberCheckInView({ preferredPassId }: { preferredPassId?: strin
                     }
                     try {
                       const decoded = decodeCheckInChallenge(value);
-                      if (decoded.chainId !== expectedChainId) {
+                      if (decoded.chainId !== selectedChainId) {
                         setError(CHECK_IN_FAILURE_MESSAGES.WRONG_NETWORK);
                         return;
                       }

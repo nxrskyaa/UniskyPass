@@ -7,6 +7,7 @@ import { useAccount } from "wagmi";
 import { ContractSetupNotice } from "@/components/contract-setup-notice";
 import { Countdown } from "@/components/countdown";
 import { EmptyState } from "@/components/empty-state";
+import { useNetwork } from "@/components/network-provider";
 import { PageIntro } from "@/components/page-intro";
 import { QrCodeDisplay } from "@/components/qr-code-display";
 import { QrScanner } from "@/components/qr-scanner";
@@ -21,13 +22,9 @@ import {
   verifyCheckInResponse,
   type CheckInVerificationResult,
 } from "@/lib/checkin";
-import {
-  contractAddress,
-  expectedChainId,
-  networkConfigurationError,
-  wagmiConfig,
-} from "@/lib/chain/config";
 import { formatDate, shortenAddress } from "@/lib/chain/format";
+import { wagmiConfig } from "@/lib/chain/config";
+import { USED_CHECK_IN_NONCES_STORAGE_KEY } from "@/lib/checkin/nonce-ledger";
 import { encodeCheckInChallenge } from "@/lib/qr";
 import { useFreshPassReader } from "@/hooks/use-fresh-pass-reader";
 import { useIssuerDashboard } from "@/hooks/use-issuer-dashboard";
@@ -57,6 +54,9 @@ function IssuerScannerSession({
   isConnected: boolean;
   chainId?: number;
 }) {
+  const { deployment, selectedChainId } = useNetwork();
+  const contractAddress = deployment.contractAddress;
+  const networkConfigurationError = deployment.configurationError;
   const dashboard = useIssuerDashboard(address);
   const readFreshPass = useFreshPassReader();
   const [programId, setProgramId] = useState(preferredProgramId ?? "");
@@ -66,7 +66,12 @@ function IssuerScannerSession({
   const [verifying, setVerifying] = useState(false);
   const verifyingRef = useRef(false);
   const sessionGenerationRef = useRef(0);
-  const [ledger] = useState(() => createSessionNonceLedger());
+  const [ledger] = useState(() =>
+    createSessionNonceLedger(
+      undefined,
+      `${USED_CHECK_IN_NONCES_STORAGE_KEY}:${selectedChainId}:${contractAddress ?? "unconfigured"}`,
+    ),
+  );
 
   const programs = useMemo(
     () => dashboard.data?.programs ?? [],
@@ -87,7 +92,7 @@ function IssuerScannerSession({
     const next = createCheckInChallenge({
       issuer: address,
       programId: BigInt(chosenProgramId),
-      chainId: expectedChainId,
+      chainId: selectedChainId,
       contractAddress,
     });
     setChallenge(next);
@@ -118,8 +123,8 @@ function IssuerScannerSession({
             <EmptyState title="Connect the issuer wallet" description="Only the wallet that owns the selected program can run its scanner session." action={<WalletButton />} />
           ) : networkConfigurationError ? (
             <EmptyState title="Network configuration is invalid" description={networkConfigurationError} />
-          ) : chainId !== expectedChainId ? (
-            <EmptyState title="Wrong network" description="Switch to the configured Monad network before generating a challenge." />
+          ) : chainId !== selectedChainId ? (
+            <EmptyState title="Wrong network" description={`Switch your wallet to ${deployment.chain.name} before generating a challenge.`} />
           ) : !contractAddress ? (
             <EmptyState title="Scanner Mode needs the deployed contract" description="Set the registry address so every proof is bound to the correct contract." />
           ) : dashboard.isPending ? (
@@ -214,7 +219,7 @@ function IssuerScannerSession({
                             activeChallenge: challenge,
                             scannerAddress: address,
                             scannerChainId: chainId,
-                            expectedChainId,
+                            expectedChainId: selectedChainId,
                             contractAddress,
                             nonceLedger: ledger,
                             readFreshPass,

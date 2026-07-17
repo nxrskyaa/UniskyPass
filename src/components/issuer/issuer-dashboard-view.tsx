@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BadgeCheck, CircleAlert, Layers3, QrCode, RefreshCw, TicketCheck, Users } from "lucide-react";
 import { useAccount } from "wagmi";
 import { ContractSetupNotice } from "@/components/contract-setup-notice";
+import { useNetwork } from "@/components/network-provider";
 import { EmptyState } from "@/components/empty-state";
 import { CreateProgramForm } from "@/components/issuer/create-program-form";
 import { IssuedPassList } from "@/components/issuer/issued-pass-list";
@@ -14,16 +15,14 @@ import { PageIntro } from "@/components/page-intro";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { WalletButton } from "@/components/wallet-button";
-import {
-  contractAddress,
-  expectedChainId,
-  networkConfigurationError,
-} from "@/lib/chain/config";
 import { formatDate } from "@/lib/chain/format";
 import { useIssuerDashboard } from "@/hooks/use-issuer-dashboard";
 
 export function IssuerDashboardView() {
   const { address, isConnected, chainId } = useAccount();
+  const { deployment, selectedChainId } = useNetwork();
+  const contractAddress = deployment.contractAddress;
+  const networkConfigurationError = deployment.configurationError;
   const dashboard = useIssuerDashboard(address);
   const activePassCount = dashboard.data?.passes.filter(({ status }) => status === 2).length ?? 0;
 
@@ -55,8 +54,8 @@ export function IssuerDashboardView() {
             />
           ) : networkConfigurationError ? (
             <EmptyState title="Network configuration is invalid" description={networkConfigurationError} />
-          ) : chainId !== expectedChainId ? (
-            <EmptyState title="Switch to the required Monad network" description="Use the network prompt above before creating or managing memberships." />
+          ) : chainId !== selectedChainId ? (
+            <EmptyState title="Switch to the required Monad network" description={`Switch your wallet to ${deployment.chain.name} before creating or managing memberships.`} />
           ) : !contractAddress ? (
             <EmptyState title="Issuer tools will unlock after contract deployment" description="Set the registry address for this environment to enable real onchain actions." />
           ) : dashboard.isPending ? (

@@ -14,14 +14,10 @@ import type {
   Hex,
   TransactionReceipt,
 } from "viem";
+import { useNetwork } from "@/components/network-provider";
 import { useToast } from "@/components/toast-provider";
 import { uniskyPassAbi } from "@/lib/chain/abi";
-import {
-  assertExpectedRpcChain,
-  contractAddress,
-  expectedChainId,
-  networkConfigurationError,
-} from "@/lib/chain/config";
+import { assertRpcChain } from "@/lib/chain/config";
 import {
   explainWalletError,
   isDefinitiveSubmissionFailure,
@@ -46,7 +42,13 @@ export function useContractMutation() {
   const notify = useToast();
   const queryClient = useQueryClient();
   const { address, chainId } = useAccount();
-  const publicClient = usePublicClient({ chainId: expectedChainId });
+  const {
+    deployment,
+    selectedChainId,
+    beginTransaction,
+    finishTransaction,
+  } = useNetwork();
+  const publicClient = usePublicClient({ chainId: selectedChainId });
   const syncMutation = useWriteContractSync();
   const standardMutation = useWriteContract();
   const [gasQuote, setGasQuote] = useState<{
@@ -81,25 +83,44 @@ export function useContractMutation() {
       if (inFlightRef.current) {
         throw new Error("A transaction is already being prepared.");
       }
+      try {
+        beginTransaction();
+      } catch (error) {
+        const message = explainWalletError(error);
+        setLastError(message);
+        notify({
+          title: "Transaction blocked",
+          description: message,
+          tone: "error",
+        });
+        throw error;
+      }
       inFlightRef.current = true;
       setPreflightPending(true);
       let submissionAttempted = false;
       let submittedHash: Hex | undefined;
       let receiptObserved = false;
+      let keepTransactionGuard = false;
       try {
-        if (networkConfigurationError) throw new Error(networkConfigurationError);
-        if (!contractAddress) {
+        const operationDeployment = deployment;
+        const operationChainId = operationDeployment.chainId;
+        const registry = operationDeployment.contractAddress;
+
+        if (operationDeployment.configurationError) {
+          throw new Error(operationDeployment.configurationError);
+        }
+        if (!registry) {
           throw new Error("The Unisky Pass contract address is not configured yet.");
         }
         if (!address) throw new Error("Connect your wallet first.");
-        if (chainId !== expectedChainId) {
+        if (chainId !== operationChainId) {
           throw new Error("Switch to the required Monad network first.");
         }
         if (!publicClient) throw new Error("Monad RPC is unavailable.");
 
-        await assertExpectedRpcChain(publicClient);
+        await assertRpcChain(publicClient, operationDeployment);
         await publicClient.simulateContract({
-          address: contractAddress,
+          address: registry,
           abi: uniskyPassAbi,
           functionName,
           args: args as never,
@@ -107,7 +128,7 @@ export function useContractMutation() {
         });
 
         const estimate = await publicClient.estimateContractGas({
-          address: contractAddress,
+          address: registry,
           abi: uniskyPassAbi,
           functionName,
           args: args as never,
@@ -133,12 +154,12 @@ export function useContractMutation() {
           submissionAttempted = true;
           receipt = await syncMutation.mutateAsync(
             {
-              address: contractAddress,
+              address: registry,
               abi: uniskyPassAbi,
               functionName,
               args: args as never,
               account: address,
-              chainId: expectedChainId,
+              chainId: operationChainId,
               gas: gasLimit,
               throwOnReceiptRevert: true,
               timeout: 20_000,
@@ -150,12 +171,12 @@ export function useContractMutation() {
           submissionAttempted = true;
           submittedHash = await standardMutation.mutateAsync(
             {
-              address: contractAddress,
+              address: registry,
               abi: uniskyPassAbi,
               functionName,
               args: args as never,
               account: address,
-              chainId: expectedChainId,
+              chainId: operationChainId,
               gas: gasLimit,
             } as never,
           );
@@ -177,7 +198,9 @@ export function useContractMutation() {
           tone: "success",
         });
         await queryClient
-          .invalidateQueries({ queryKey: ["unisky"] })
+          .invalidateQueries({
+            queryKey: ["unisky", operationChainId, registry],
+          })
           .catch(() => undefined);
         return receipt;
       } catch (error) {
@@ -185,7 +208,10 @@ export function useContractMutation() {
           !receiptObserved &&
           (Boolean(submittedHash) ||
             (submissionAttempted && !isDefinitiveSubmissionFailure(error)));
-        if (confirmationUnknown) confirmationUncertainRef.current = true;
+        if (confirmationUnknown) {
+          confirmationUncertainRef.current = true;
+          keepTransactionGuard = true;
+        }
         const message = confirmationUnknown
           ? `The wallet or RPC did not return a definitive receipt, so the transaction may already be onchain. Do not submit it again until you check your wallet activity and the block explorer.${submittedHash ? ` Transaction hash: ${submittedHash}` : ""}`
           : explainWalletError(error);
@@ -201,11 +227,15 @@ export function useContractMutation() {
       } finally {
         inFlightRef.current = false;
         setPreflightPending(false);
+        finishTransaction(keepTransactionGuard);
       }
     },
     [
       address,
+      beginTransaction,
       chainId,
+      deployment,
+      finishTransaction,
       notify,
       publicClient,
       queryClient,

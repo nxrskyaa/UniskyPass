@@ -3,13 +3,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { usePublicClient } from "wagmi";
 import type { Address } from "viem";
+import { useNetwork } from "@/components/network-provider";
 import { uniskyPassAbi } from "@/lib/chain/abi";
-import {
-  assertExpectedRpcChain,
-  contractAddress,
-  expectedChainId,
-  networkConfigurationError,
-} from "@/lib/chain/config";
+import { assertRpcChain } from "@/lib/chain/config";
 import type { PassStatusCode } from "@/lib/chain/format";
 import {
   normalizeIssuer,
@@ -27,18 +23,24 @@ export type IssuerDashboardData = {
 };
 
 export function useIssuerDashboard(issuerAddress?: Address) {
-  const publicClient = usePublicClient({ chainId: expectedChainId });
+  const { deployment, selectedChainId, isWalletOnSelectedChain } = useNetwork();
+  const publicClient = usePublicClient({ chainId: selectedChainId });
+  const contractAddress = deployment.contractAddress;
 
   return useQuery({
     queryKey: [
       "unisky",
-      "issuer-dashboard",
-      expectedChainId,
+      deployment.chainId,
       contractAddress,
+      "issuer-dashboard",
       issuerAddress,
     ],
     enabled: Boolean(
-      publicClient && contractAddress && issuerAddress && !networkConfigurationError,
+      publicClient &&
+        contractAddress &&
+        issuerAddress &&
+        isWalletOnSelectedChain &&
+        !deployment.configurationError,
     ),
     refetchInterval: 12_000,
     queryFn: async (): Promise<IssuerDashboardData> => {
@@ -49,7 +51,7 @@ export function useIssuerDashboard(issuerAddress?: Address) {
           passes: [],
         };
       }
-      await assertExpectedRpcChain(publicClient);
+      await assertRpcChain(publicClient, deployment);
       const registry = contractAddress;
 
       const [rawIssuer, rawProgramIds] = await Promise.all([

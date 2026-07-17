@@ -3,12 +3,9 @@
 import { useCallback } from "react";
 import { usePublicClient } from "wagmi";
 import { BaseError, ContractFunctionRevertedError } from "viem";
+import { useNetwork } from "@/components/network-provider";
 import { uniskyPassAbi } from "@/lib/chain/abi";
-import {
-  assertExpectedRpcChain,
-  contractAddress,
-  expectedChainId,
-} from "@/lib/chain/config";
+import { assertRpcChain } from "@/lib/chain/config";
 import { normalizePass } from "@/lib/chain/records";
 import type { FreshPassReader } from "@/types/checkin";
 
@@ -24,14 +21,16 @@ function isPassNotFound(error: unknown) {
 }
 
 export function useFreshPassReader(): FreshPassReader {
-  const publicClient = usePublicClient({ chainId: expectedChainId });
+  const { deployment, selectedChainId } = useNetwork();
+  const publicClient = usePublicClient({ chainId: selectedChainId });
+  const contractAddress = deployment.contractAddress;
 
   return useCallback(
     async (query) => {
       if (!publicClient || !contractAddress) {
         throw new Error("Monad contract client is unavailable.");
       }
-      await assertExpectedRpcChain(publicClient);
+      await assertRpcChain(publicClient, deployment);
       const registry = contractAddress;
       const block = await publicClient.getBlock({ blockTag: "latest" });
       const [passResult, validResult] = await Promise.allSettled([
@@ -69,6 +68,6 @@ export function useFreshPassReader(): FreshPassReader {
         chainTimestamp: block.timestamp,
       };
     },
-    [publicClient],
+    [contractAddress, deployment, publicClient],
   );
 }

@@ -7,15 +7,19 @@
 2. The visitor chooses **My Passes** or **Issuer Dashboard**. Either mode may be
    used by the same wallet.
 3. A wallet connection request is made only after an explicit user action.
-4. The app compares the connected chain with `NEXT_PUBLIC_MONAD_CHAIN_ID`.
-5. If they differ, the app shows the expected network and a switch action. Reads
+4. The visitor selects Monad Mainnet or Monad Testnet. The app resolves the
+   chain, RPC, explorer, and registry address from that deployment selection.
+5. The app compares the connected wallet chain with the selected chain. If they
+   differ, it shows the expected network and a switch action. Reads
    that could mislead the user, signatures, and writes remain blocked until the
    network is correct.
 6. If the RPC or contract address is missing or unavailable, the app shows a
    configuration/read error with retry; it never substitutes mock validity.
 
-Production expects Monad mainnet (`143`). Testnet dry runs use the same flows
-with all environment values changed together to Monad testnet (`10143`).
+Production defaults to Monad mainnet (`143`) and Preview defaults to testnet
+(`10143`), but both deployments are selectable. Mainnet issuer/program/pass
+state exists only on mainnet; testnet state exists only on testnet. Issuer and
+member must select and connect to the same network for check-in.
 
 ## Issuer onboarding
 

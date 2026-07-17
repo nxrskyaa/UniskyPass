@@ -48,9 +48,9 @@ See [Security notes](docs/SECURITY_NOTES.md) for the complete threat model.
 | Monad testnet | `10143` | `https://testnet-rpc.monad.xyz` | `https://testnet.monadscan.com` |
 | Monad mainnet | `143` | `https://rpc.monad.xyz` | `https://monadscan.com` |
 
-The project is mainnet-targeted, but every release must complete a testnet dry
-run first. No contract address is assumed: use the address emitted by the deploy
-script and set it through environment variables.
+The interface supports both networks at runtime. Mainnet and testnet have
+separate registries and separate state; the wallet must match the network chosen
+in the app. Every release must still complete a testnet dry run first.
 
 ## Prerequisites
 
@@ -74,19 +74,21 @@ Copy-Item .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Configure `.env.local` for
-the network and deployed contract you intend to use:
+Open [http://localhost:3000](http://localhost:3000). Configure `.env.local` with
+both public deployments and choose only the initial default:
 
 ```dotenv
-NEXT_PUBLIC_MONAD_RPC_URL=https://testnet-rpc.monad.xyz
-NEXT_PUBLIC_MONAD_CHAIN_ID=10143
-NEXT_PUBLIC_UNISKY_PASS_CONTRACT_ADDRESS=0xYOUR_TESTNET_CONTRACT
-NEXT_PUBLIC_BLOCK_EXPLORER_URL=https://testnet.monadscan.com
+NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID=10143
+NEXT_PUBLIC_MONAD_MAINNET_RPC_URL=https://rpc.monad.xyz
+NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL=https://monadscan.com
+NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS=0x935D7681Fd0454f38848925fc03d918dA036Ed99
+NEXT_PUBLIC_MONAD_TESTNET_RPC_URL=https://testnet-rpc.monad.xyz
+NEXT_PUBLIC_MONAD_TESTNET_EXPLORER_URL=https://testnet.monadscan.com
+NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS=0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690
 ```
 
-For production, switch all four values together to the mainnet RPC, chain ID
-`143`, the mainnet contract address, and the mainnet explorer. Mixing network
-values is an invalid configuration.
+Production normally sets `NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID=143`; changing the
+default does not remove either network from the selector.
 
 ## Build and test
 

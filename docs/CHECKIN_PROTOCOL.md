@@ -40,8 +40,8 @@ challenge expires exactly 60 seconds after creation.
 | `n` | nonce | string | `0x`-prefixed 32-byte hex |
 | `i` | issuer | string | EVM address |
 | `p` | programId | string | positive base-10 `uint256` |
-| `c` | chainId | number | configured chain, `143` in production |
-| `a` | contractAddress | string | configured `UniskyPassRegistry` address |
+| `c` | chainId | number | selected deployment chain (`143` or `10143`) |
+| `a` | contractAddress | string | selected deployment's `UniskyPassRegistry` address |
 | `iat` | createdAt | number | integer Unix seconds |
 | `exp` | expiresAt | number | exactly `createdAt + 60` |
 
@@ -63,9 +63,9 @@ The issuer browser records the exact active challenge in the current scanner
 session and displays a live countdown. Creating a replacement challenge makes
 the prior challenge no longer active for that scanner flow.
 
-For the mandatory testnet dry run, challenge chain ID and contract address use
-the coherent testnet environment (`10143`). Production uses mainnet chain ID
-`143`. A payload must never combine values from different environments.
+For the mandatory testnet dry run, challenge chain ID and contract address come
+from the testnet deployment (`10143`). Mainnet uses chain ID `143` and its own
+registry. A payload must never combine values from different deployments.
 
 ## Member selection and EIP-712 signature
 
@@ -83,8 +83,9 @@ chainId:           challenge.chainId
 verifyingContract: challenge.contractAddress
 ```
 
-Production values are chain ID `143` and the address configured in
-`NEXT_PUBLIC_UNISKY_PASS_CONTRACT_ADDRESS`.
+Mainnet values are chain ID `143` and
+`NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS`; testnet values are chain ID
+`10143` and `NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS`.
 
 Primary type: `CheckInProof`.
 
@@ -144,7 +145,8 @@ The scanner performs every step in this exact order and fails closed:
    to match the active challenge created by this scanner session. A valid
    signature for another scanner's challenge is not accepted here.
 3. **Check local replay ledger.** Reject the nonce if it is already used in this
-   session. The versioned key is `unisky-pass:used-checkin-nonces:v1`.
+   session. Storage is scoped from `unisky-pass:used-checkin-nonces:v1` by the
+   selected chain and registry address.
 4. **Check challenge time.** Reject when scanner time is at or after `expiresAt`.
 5. **Match issuer wallet.** Require the connected wallet to equal challenge
    `issuer`, and require the configured chain/contract to match the challenge.

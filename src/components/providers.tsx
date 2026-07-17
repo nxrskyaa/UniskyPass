@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import { WagmiProvider } from "wagmi";
+import { NetworkProvider } from "@/components/network-provider";
 import { wagmiConfig } from "@/lib/chain/config";
 import { ToastProvider } from "@/components/toast-provider";
 
@@ -23,7 +24,9 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <WagmiProvider config={wagmiConfig} reconnectOnMount>
       <QueryClientProvider client={queryClient}>
-        <ToastProvider>{children}</ToastProvider>
+        <NetworkProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </NetworkProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

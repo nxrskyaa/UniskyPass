@@ -142,8 +142,9 @@ Expiry is never shortened.
 - Next.js App Router, TypeScript, Tailwind CSS, wagmi, and viem.
 - `UniskyPassRegistry` on Monad, compiled with Solidity `0.8.28` using Foundry.
 - Vercel hosts the frontend; Monad stores permanent application state.
-- Production uses Monad mainnet chain ID `143`; every release first uses Monad
-  testnet chain ID `10143`.
+- Production defaults to Monad mainnet chain ID `143`, while users may select
+  Monad testnet chain ID `10143`. State never crosses between deployments, and
+  every release still validates testnet first.
 - The frontend never receives `DEPLOYER_PRIVATE_KEY`.
 - Monad gas is charged from `gasLimit`, so estimates must target Monad, use no
   more than a 10% buffer, and display `gasLimit * gasPrice`.
@@ -167,7 +168,8 @@ The MVP is done when:
   camera, including replay and revocation checks;
 - the human deployer deploys and verifies the unchanged contract on Monad
   mainnet using their own local key;
-- Vercel production is configured only with the four public mainnet variables;
+- Vercel production is configured with both public deployment maps and defaults
+  to mainnet;
 - the complete core loop passes again on the production URL and mainnet; and
 - UI and documentation use the honest screenshot, replay, and wallet-sharing
   claims above.

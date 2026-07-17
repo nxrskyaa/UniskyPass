@@ -28,6 +28,10 @@ manual scenario passed merely because the build succeeds.
 All environment values—RPC, chain ID, explorer, and registry address—must refer
 to the same deployment during a test.
 
+For runtime selection, the connected wallet must match the selected deployment.
+Switching networks must also switch the registry, RPC, explorer, and query scope
+together.
+
 ## Standard automated gates
 
 From the repository root:
@@ -232,6 +236,12 @@ Vercel HTTPS preview:
 8. Revoke between signature and scan and confirm the fresh-read failure.
 9. Exercise camera denial/recovery on at least one mobile browser.
 10. Confirm explorer links point to testnet and the verified contract.
+11. Switch to mainnet and confirm testnet programs/passes disappear; switch back
+    and confirm they return only from testnet query state.
+12. Reject a wallet network-switch request and confirm the app keeps the prior
+    deployment selected.
+13. Attempt to use a QR created on the other network and confirm `Wrong network`
+    or `Wrong contract`, never `VALID`.
 
 Do not proceed to mainnet if any core or security scenario fails.
 
@@ -244,7 +254,9 @@ configuration, and a green build:
 - repeat issuer registration, program, issuance, My Passes, and complete
   check-in using controlled demo wallets;
 - repeat same-session replay rejection and post-sign revocation rejection;
-- verify transaction hashes and contract source on the mainnet explorer; and
+- verify transaction hashes and contract source on the mainnet explorer;
+- switch to testnet and confirm only testnet state, address, and explorer links
+  are shown, then switch back to mainnet; and
 - inspect the production environment to confirm no deployer key is present.
 
 ## Evidence and sign-off

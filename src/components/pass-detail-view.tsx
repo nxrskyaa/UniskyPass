@@ -6,20 +6,18 @@ import { useAccount } from "wagmi";
 import { CopyButton } from "@/components/copy-button";
 import { EmptyState } from "@/components/empty-state";
 import { LoadingCards } from "@/components/loading-cards";
+import { useNetwork } from "@/components/network-provider";
 import { StatusBadge } from "@/components/status-badge";
 import { Card } from "@/components/ui/card";
 import { WalletButton } from "@/components/wallet-button";
-import {
-  contractAddress,
-  expectedChainId,
-  expectedExplorerUrl,
-  networkConfigurationError,
-} from "@/lib/chain/config";
 import { formatDate, formatDuration } from "@/lib/chain/format";
 import { useMemberPasses } from "@/hooks/use-member-passes";
 
 export function PassDetailView({ passId }: { passId: string }) {
   const { address, isConnected, chainId } = useAccount();
+  const { deployment, selectedChainId } = useNetwork();
+  const contractAddress = deployment.contractAddress;
+  const networkConfigurationError = deployment.configurationError;
   const passes = useMemberPasses(address);
   const item = passes.data?.find((pass) => pass.id.toString() === passId);
 
@@ -35,12 +33,12 @@ export function PassDetailView({ passId }: { passId: string }) {
     );
   }
 
-  if (networkConfigurationError || chainId !== expectedChainId || !contractAddress) {
+  if (networkConfigurationError || chainId !== selectedChainId || !contractAddress) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <EmptyState
-          title={networkConfigurationError ? "Network configuration is invalid" : chainId !== expectedChainId ? "Switch to the required network" : "Pass lookup is waiting for deployment"}
-          description={networkConfigurationError ?? (chainId !== expectedChainId ? "Switch to the configured Monad network before loading this pass." : "Set the deployed registry address before loading pass details.")}
+          title={networkConfigurationError ? "Network configuration is invalid" : chainId !== selectedChainId ? "Switch to the required network" : "Pass lookup is waiting for deployment"}
+          description={networkConfigurationError ?? (chainId !== selectedChainId ? `Switch to ${deployment.chain.name} before loading this pass.` : "Set the deployed registry address before loading pass details.")}
           action={<Link href="/passes" className="font-bold text-violet underline underline-offset-4">Back to My Passes</Link>}
         />
       </div>
@@ -135,7 +133,7 @@ export function PassDetailView({ passId }: { passId: string }) {
               ) : null}
               <CopyButton value={item.id.toString()} variant="secondary">Copy pass ID</CopyButton>
               <a
-                href={`${expectedExplorerUrl}/address/${item.pass.issuer}`}
+                href={`${deployment.explorerUrl}/address/${item.pass.issuer}`}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex min-h-11 items-center rounded-xl px-3 text-sm font-bold text-violet hover:bg-violet/8"

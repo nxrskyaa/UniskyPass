@@ -3,13 +3,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { usePublicClient } from "wagmi";
 import type { Address } from "viem";
+import { useNetwork } from "@/components/network-provider";
 import { uniskyPassAbi } from "@/lib/chain/abi";
-import {
-  assertExpectedRpcChain,
-  contractAddress,
-  expectedChainId,
-  networkConfigurationError,
-} from "@/lib/chain/config";
+import { assertRpcChain } from "@/lib/chain/config";
 import type { PassStatusCode } from "@/lib/chain/format";
 import {
   normalizePass,
@@ -18,17 +14,29 @@ import {
 } from "@/lib/chain/records";
 
 export function useMemberPasses(holder?: Address) {
-  const publicClient = usePublicClient({ chainId: expectedChainId });
+  const { deployment, selectedChainId, isWalletOnSelectedChain } = useNetwork();
+  const publicClient = usePublicClient({ chainId: selectedChainId });
+  const contractAddress = deployment.contractAddress;
 
   return useQuery({
-    queryKey: ["unisky", "member-passes", expectedChainId, contractAddress, holder],
+    queryKey: [
+      "unisky",
+      deployment.chainId,
+      contractAddress,
+      "member-passes",
+      holder,
+    ],
     enabled: Boolean(
-      publicClient && contractAddress && holder && !networkConfigurationError,
+      publicClient &&
+        contractAddress &&
+        holder &&
+        isWalletOnSelectedChain &&
+        !deployment.configurationError,
     ),
     refetchInterval: 12_000,
     queryFn: async (): Promise<MemberPass[]> => {
       if (!publicClient || !contractAddress || !holder) return [];
-      await assertExpectedRpcChain(publicClient);
+      await assertRpcChain(publicClient, deployment);
       const registry = contractAddress;
 
       const passIds = (await publicClient.readContract({
