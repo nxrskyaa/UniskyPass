@@ -179,7 +179,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-scene--intro { min-height: 190vh; background: var(--film-ink); }
 .intro-scene__inner { display: flex; flex-direction: column; justify-content: center; min-height: 100svh; }
 .intro-topline { position: absolute; top: 7rem; right: clamp(1.25rem, 5vw, 6rem); left: clamp(1.25rem, 5vw, 6rem); display: flex; justify-content: space-between; color: var(--film-gray); font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; }
-.intro-wordmark { display: flex; align-items: baseline; overflow: visible; white-space: nowrap; font-size: clamp(8rem, 29vw, 31rem); font-weight: 900; line-height: 0.72; letter-spacing: -0.105em; }
+.intro-wordmark { display: flex; align-items: baseline; overflow: visible; margin: 0; white-space: nowrap; font-size: clamp(8rem, 29vw, 31rem); font-weight: 900; line-height: 0.72; letter-spacing: -0.105em; }
 .intro-wordmark__u { position: relative; z-index: 2; display: inline-block; color: var(--film-paper); }
 .intro-wordmark__tail { display: inline-block; color: var(--film-paper); }
 .intro-counter { position: absolute; top: 50%; left: clamp(7rem, 18vw, 18rem); display: grid; width: clamp(8rem, 18vw, 20rem); aspect-ratio: 1; place-items: center; border: 1px solid color-mix(in srgb, var(--film-signal) 60%, transparent); color: var(--film-signal); opacity: 0; transform: translateY(-50%) scale(0.9); }
@@ -276,6 +276,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-cta--primary:hover { color: var(--film-paper); background: transparent; }
 .landing-cta--secondary { color: var(--film-paper); }
 .landing-cta--secondary:hover { color: var(--film-ink); background: var(--film-paper); }
+.landing-film a.landing-cta--primary { color: var(--film-ink); }
+.landing-film a.landing-cta--primary:hover { color: var(--film-paper); }
 .finale-contract { display: inline-flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.25rem; color: var(--film-gray); font-size: 0.66rem; }
 .finale-contract span { color: var(--film-paper); }
 .finale-u { position: absolute; right: -0.12em; bottom: -0.4em; color: var(--film-paper); font-size: min(64vw, 62rem); font-weight: 900; line-height: 0.7; letter-spacing: -0.16em; opacity: 0.08; pointer-events: none; }
@@ -290,19 +292,21 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .landing-progress { top: 3.7rem; right: 0.55rem; bottom: 0.6rem; }
   .landing-scene__inner { padding: 6rem 1.25rem 2.5rem; }
   .intro-topline { top: 6rem; right: 1.25rem; left: 1.25rem; font-size: 0.58rem; }
-  .intro-wordmark { font-size: clamp(6.2rem, 28vw, 12rem); letter-spacing: -0.12em; }
+  .landing-scene--intro { min-height: 118vh; }
+  .intro-wordmark { font-size: clamp(5.4rem, 24vw, 9.5rem); letter-spacing: -0.13em; }
   .intro-counter { top: 45%; left: 20%; width: 8rem; }
   .intro-meta { right: 1.25rem; font-size: 0.56rem; }
   .intro-copy { bottom: 5rem; left: 1.25rem; font-size: 0.57rem; }
   .intro-scroll { right: 1.25rem; bottom: 2.5rem; font-size: 0.55rem; }
   .intro-rail { top: 10rem; bottom: 3rem; }
   .proof-coordinate { top: 6rem; right: 1.25rem; font-size: 0.56rem; }
-  .proof-plane { top: 22%; bottom: 20%; width: 42%; }
+  .landing-scene--proof { min-height: 118vh; }
+  .proof-plane { top: 17%; bottom: 42%; width: 40%; }
   .proof-plane--one { left: 2%; }
   .proof-plane--two { right: 2%; }
-  .proof-plane span { font-size: 45vw; }
-  .proof-statement { right: 1.25rem; bottom: 12%; left: 1.25rem; }
-  .proof-statement h2, .proof-statement h3 { font-size: clamp(2.35rem, 13vw, 5rem); }
+  .proof-plane span { top: 45%; font-size: 34vw; }
+  .proof-statement { right: 1.25rem; bottom: 8%; left: 1.25rem; padding-top: 0.9rem; background: var(--film-dark-gray); }
+  .proof-statement h2, .proof-statement h3 { font-size: clamp(2.25rem, 10.5vw, 4.3rem); line-height: 0.88; }
   .proof-footer { right: 1.25rem; bottom: 2rem; left: 1.25rem; font-size: 0.52rem; }
   .sixty-header { top: 6rem; right: 1.25rem; left: 1.25rem; font-size: 0.54rem; }
   .sixty-count-wrap { top: 20%; left: -0.04em; font-size: 65vw; }
@@ -319,15 +323,17 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .loop-screen h2 { font-size: clamp(2.6rem, 13vw, 5rem); }
   .loop-index { right: 1.25rem; bottom: 8%; font-size: 4rem; }
   .loop-viewfinder { inset: 22% 1.25rem 12%; }
-  .registry-u { top: 24%; left: -20%; font-size: 130vw; }
-  .registry-index { top: 15%; left: 1.25rem; }
-  .registry-index h2 { font-size: clamp(2.4rem, 12vw, 5rem); }
+  .landing-scene--registry { min-height: 140vh; }
+  .registry-u { top: 43%; left: -20%; font-size: 130vw; }
+  .registry-index { top: 12%; left: 1.25rem; }
+  .registry-index h2 { font-size: clamp(2.4rem, 11.2vw, 5rem); line-height: 0.9; }
   .registry-rows { top: 44%; right: 1.25rem; left: 1.25rem; width: auto; }
   .registry-row { grid-template-columns: 5.2rem 1fr auto; gap: 0.5rem; min-height: 3rem; }
   .registry-row strong { font-size: 0.67rem; }
   .registry-row .technical-label { font-size: 0.53rem; }
   .registry-summary { right: 1.25rem; bottom: 4%; left: 1.25rem; font-size: 0.53rem; line-height: 1.4; }
-  .climax-copy { font-size: clamp(3.1rem, 15vw, 6rem); }
+  .landing-scene--climax { min-height: 110vh; }
+  .climax-copy { white-space: nowrap; font-size: clamp(2.35rem, 9.4vw, 4.6rem); line-height: 0.88; letter-spacing: -0.09em; }
   .finale-scene__inner { padding-top: 8rem; }
   .finale-mark { margin-bottom: 4rem; }
   .finale-scene__inner h2 { font-size: clamp(3.2rem, 15vw, 6rem); }
