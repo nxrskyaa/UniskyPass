@@ -7,14 +7,15 @@ slices, keep the repository buildable after each slice, and commit one phase (or
 a tightly related few) at a time with its validation evidence. The core
 issuer-to-member-to-scanner loop is never cut.
 
-The contract source is final. There is no backend, database, account service,
-indexer, payment path, or onchain check-in history to implement.
+The contract source is final. There is no first-party backend, database, account
+service, indexer, payment path, or onchain check-in history to implement. Privy
+is the explicitly approved external authentication and embedded-wallet layer.
 
 ## Dependency order
 
 ```text
 docs/tooling -> contract tests -> testnet deploy + verify -> static shell
--> wallet/network -> issuer writes -> member reads -> pass management
+-> Privy wallet/network -> issuer writes -> member reads -> pass management
 -> EIP-712 + QR check-in -> testnet real-device gate -> human mainnet deploy
 -> Vercel production + smoke test
 ```
@@ -33,6 +34,8 @@ Deliverables:
   before code changes;
 - create the intended frontend module folders without duplicate frameworks;
 - add complete `.env.example` with public variables and local-only deployer key;
+- document the public Privy App ID, optional Client ID, and prohibition on Privy
+  secrets in the client-only app;
 - add visible `.monskills` with `built-with=monskills` and `chain=monad`;
 - create all product, protocol, security, privacy, test, implementation, and
   deployment documents; and
@@ -97,15 +100,20 @@ Acceptance:
 - irreversible revocation and screenshot claims are accurate; and
 - `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build` pass.
 
-## Phase 3 — Wallet, network, and contract foundation
+## Phase 3 — Privy, wallet, network, and contract foundation
 
 **Goal:** establish one coherent Monad interaction layer.
 
 Deliverables:
 
-- wagmi/viem provider and `monad` / `monadTestnet` definitions compatible with
-  installed versions;
-- connect, disconnect, account-change, and wrong-network UX;
+- Privy provider plus its wagmi adapter, and `monad` / `monadTestnet`
+  definitions compatible with installed versions;
+- Email OTP and external-wallet login, SMS only where enabled and available,
+  and embedded EVM wallet creation for users without a wallet;
+- initialization, login, logout, active-wallet, account-change, and
+  wrong-network UX;
+- exact Privy allowed-origin configuration for localhost, Preview, and
+  Production without a generic Vercel wildcard;
 - environment validation for RPC, chain ID, explorer, and verified address;
 - ABI generated/copied from the Foundry artifact without hand drift;
 - public client, wallet client/hooks, error mapping, receipt refresh, and
@@ -116,8 +124,12 @@ Acceptance:
 
 - disconnected, wrong-network, rejected, reverted, confirmed, and RPC failure
   states are manually verified;
+- returning Privy login restores the same embedded address, active-wallet
+  changes reset account-scoped state, and transaction guards block unsafe
+  logout/wallet switching;
 - mixed configuration fails closed;
-- no frontend bundle contains `DEPLOYER_PRIVATE_KEY`; and
+- no frontend bundle contains `DEPLOYER_PRIVATE_KEY`, a Privy App Secret, or a
+  Privy authorization key; and
 - build/lint gates pass.
 
 Use Monad synchronous transaction submission only if the installed library API
@@ -214,6 +226,10 @@ Deliverables:
 - accessibility, responsive, loading, retry, and RPC resilience pass;
 - copy/security/privacy review;
 - dependency and secret review;
+- real-device Email and external-wallet login, embedded-wallet recovery, and SMS
+  testing only where enabled and available;
+- privacy inspection confirming login identifiers and OTPs are absent from
+  browser persistence, logs, QR payloads, and onchain data;
 - final README demo script and operational docs; and
 - complete automated and manual test evidence.
 
@@ -258,13 +274,15 @@ For each phase:
 5. Note security/privacy impact and known risk.
 6. Commit only a green, coherent slice with a clear message.
 
-Never include private keys, seed phrases, `.env.local`, full environment dumps,
-or invented deployment results in commits.
+Never include private keys, seed phrases, Privy secrets, login identifiers,
+OTPs, `.env.local`, full environment dumps, or invented deployment results in
+commits.
 
 ## Release handoff
 
 The implementation agent may prepare scripts, builds, testnet deployment, and
 Vercel configuration. A human explicitly supplies their own key and authorizes
 the mainnet deployment. After source verification, the verified address is set
-in the four public Vercel production variables and a production smoke test closes
-the MVP.
+in the chain-keyed public Vercel production variables, together with the public
+Privy App ID and optional Client ID. The exact production origin is configured
+in Privy Dashboard, and a production smoke test closes the MVP.

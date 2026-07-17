@@ -3,7 +3,6 @@
 import { CheckCircle2, CircleAlert, QrCode, RefreshCw, ScanLine, ShieldCheck } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import type { Address } from "viem";
-import { useAccount } from "wagmi";
 import { ContractSetupNotice } from "@/components/contract-setup-notice";
 import { Countdown } from "@/components/countdown";
 import { EmptyState } from "@/components/empty-state";
@@ -14,7 +13,7 @@ import { QrScanner } from "@/components/qr-scanner";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Label, Select } from "@/components/ui/field";
-import { WalletButton } from "@/components/wallet-button";
+import { WalletSessionNotice } from "@/components/wallet-session-notice";
 import {
   CHECK_IN_FAILURE_MESSAGES,
   createCheckInChallenge,
@@ -28,16 +27,21 @@ import { USED_CHECK_IN_NONCES_STORAGE_KEY } from "@/lib/checkin/nonce-ledger";
 import { encodeCheckInChallenge } from "@/lib/qr";
 import { useFreshPassReader } from "@/hooks/use-fresh-pass-reader";
 import { useIssuerDashboard } from "@/hooks/use-issuer-dashboard";
+import {
+  useWalletSession,
+  type WalletSessionStatus,
+} from "@/hooks/use-wallet-session";
 import type { CheckInChallenge } from "@/types/checkin";
 
 export function IssuerScannerView({ preferredProgramId }: { preferredProgramId?: string }) {
-  const { address, isConnected, chainId } = useAccount();
+  const { address, chainId, status: walletSessionStatus } =
+    useWalletSession();
   return (
     <IssuerScannerSession
-      key={`${address ?? "disconnected"}:${chainId ?? "no-chain"}`}
+      key={`${walletSessionStatus}:${address ?? "disconnected"}:${chainId ?? "no-chain"}`}
       preferredProgramId={preferredProgramId}
       address={address}
-      isConnected={isConnected}
+      walletSessionStatus={walletSessionStatus}
       chainId={chainId}
     />
   );
@@ -46,12 +50,12 @@ export function IssuerScannerView({ preferredProgramId }: { preferredProgramId?:
 function IssuerScannerSession({
   preferredProgramId,
   address,
-  isConnected,
+  walletSessionStatus,
   chainId,
 }: {
   preferredProgramId?: string;
   address?: Address;
-  isConnected: boolean;
+  walletSessionStatus: WalletSessionStatus;
   chainId?: number;
 }) {
   const { deployment, selectedChainId } = useNetwork();
@@ -119,8 +123,12 @@ function IssuerScannerSession({
         <div className="mt-6"><ContractSetupNotice /></div>
 
         <div className="mt-7">
-          {!isConnected ? (
-            <EmptyState title="Connect the issuer wallet" description="Only the wallet that owns the selected program can run its scanner session." action={<WalletButton />} />
+          {walletSessionStatus !== "ready" ? (
+            <WalletSessionNotice
+              status={walletSessionStatus}
+              signedOutTitle="Connect the issuer wallet"
+              signedOutDescription="Only the wallet that owns the selected program can run its scanner session."
+            />
           ) : networkConfigurationError ? (
             <EmptyState title="Network configuration is invalid" description={networkConfigurationError} />
           ) : chainId !== selectedChainId ? (

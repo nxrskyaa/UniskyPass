@@ -8,7 +8,9 @@ issuer challenge and verify current onchain pass state before showing `VALID`.
 
 The contract has no intentional fund flow, payable entry point, owner,
 administrator, proxy, or withdrawal path. Ordinary MON transfers revert. The
-frontend has no backend, database, server account, or mainnet deployment key.
+frontend has no first-party backend, database, server account, or mainnet
+deployment key. Privy independently provides optional authentication and
+embedded-wallet infrastructure.
 
 ## Honest claims
 
@@ -26,6 +28,8 @@ Required caveats:
   can produce a valid proof.
 - An onchain issuer registration proves control of an address, not the issuer's
   legal identity, reputation, or authorization to represent an organization.
+- Email or SMS OTP login proves control of that login channel at that moment; it
+  does not establish the user's legal or physical identity.
 
 Do not claim that the product prevents all fraud, impersonation, QR replay,
 credential sharing, or account compromise.
@@ -43,6 +47,8 @@ credential sharing, or account compromise.
 
 - The holder and issuer wallet providers correctly protect keys and present
   accurate signature/transaction prompts.
+- Privy correctly authenticates enabled login methods, protects embedded-wallet
+  operations, and returns the intended active wallet.
 - The configured Monad RPC reports canonical-enough current state.
 - The deployed address corresponds to the verified `UniskyPassRegistry` source.
 - The issuer uses the intended production frontend and keeps the scanner browser
@@ -53,6 +59,8 @@ credential sharing, or account compromise.
 
 - A compromised or voluntarily shared member wallet.
 - A compromised issuer wallet or scanner device.
+- A compromised email inbox, phone/SIM, OTP, Privy session, or linked external
+  wallet.
 - Global nonce consumption across browsers/devices.
 - Legal identity, physical identity, or organizational authorization.
 - Availability during RPC, wallet, network, camera, or Vercel outage.
@@ -73,8 +81,11 @@ credential sharing, or account compromise.
 | Revocation after member signs | Fresh scanner read wins | A submitted revocation not yet confirmed/observable may not be seen |
 | Challenge expiry bypass | Scanner checks 60-second expiry before signature and chain reads | Incorrect/altered browser clock affects client-only expiry |
 | Frontend spoofing | Verified deployment URL, contract address display/explorer links | No light client or code-signing guarantee in browser |
+| Privy App ID reuse | Exact allowed origins in Privy Dashboard | App ID and Client ID are public; an overly broad origin rule weakens the boundary |
+| Email/SMS account takeover | Provider OTP flow and short-lived login code | Inbox compromise, SIM swap, forwarding, phishing, or device compromise |
+| Wrong linked wallet | One explicit Privy/wagmi active wallet and account-scoped state reset | User may still select an unintended wallet and must confirm its address |
 | Name/content injection | React text escaping and 64-byte contract bound | Unicode spoofing or misleading issuer names remain possible |
-| Secret leakage | Deployer key is local Foundry-only and never `NEXT_PUBLIC_`/Vercel | Human shell, clipboard, malware, logs, or history can still leak it |
+| Secret leakage | Deployer key remains local Foundry-only; no Privy secret is needed by the client | Human shell, clipboard, malware, logs, or history can still leak secrets |
 | Excess gas cost | Monad RPC estimation, maximum 10% buffer, cost from gas limit | Wallet/provider may alter submitted fields; user must review |
 | Holder-pass enumeration denial of service | Graceful RPC failure, batched follow-up reads, unsolicited-pass warnings | Unpaginated `getHolderPasses` can be spammed beyond practical read limits |
 
@@ -121,6 +132,26 @@ If the holder shares the wallet, seed phrase, device, session, or signing access
 another person can create a valid proof. GPS, biometrics, legal identity, and
 face matching are explicitly out of scope. UI and marketing must state this
 honestly.
+
+## Privy authentication and active-wallet boundary
+
+Privy login is an onboarding and wallet-access mechanism, not the membership
+decision. The registry and EIP-712 proof use only the active wallet address.
+Unisky Pass must not use email, phone, or a Privy user ID as an issuer, holder,
+or authorization key, and must not persist those identifiers or OTPs.
+
+The Privy App ID and optional app-client ID are intentionally public browser
+configuration. They are not credentials. The production App ID must be
+restricted to exact controlled origins in the Privy Dashboard; generic
+`https://*.vercel.app` preview access is not acceptable. This client-only MVP
+does not require a Privy App Secret or authorization key, and neither may be
+added to source, browser variables, or Vercel.
+
+Privy can link multiple wallets while wagmi exposes one active wallet to product
+hooks. Connecting another wallet, switching the active wallet, or logging out is
+blocked while a transaction is active or uncertain. After an accepted wallet
+change, account-scoped queries, scanner challenges, and temporary check-in state
+are reset before another protected action.
 
 ## RPC and finality assumptions
 
@@ -171,6 +202,9 @@ warning. Member check-in itself is signature-only and should never request gas.
 - Clear it from the shell after deploy and retain only the public address/tx hash.
 - Verify source before configuring the frontend address.
 - Testnet is mandatory before mainnet.
+- Treat `NEXT_PUBLIC_PRIVY_APP_ID` and an optional
+  `NEXT_PUBLIC_PRIVY_CLIENT_ID` as public identifiers, never as secrets.
+- Do not create or configure a Privy App Secret for this client-only flow.
 
 ## Contract concerns
 
@@ -224,6 +258,12 @@ tests or review, stop and document it in this section before any source change.
 - Revoke between member signing and issuer verification and confirm fresh state
   prevents `VALID`.
 - Repeat the check-in on real phones over HTTPS.
+- Test Email and external-wallet login, returning embedded-wallet recovery,
+  logout, multiple-wallet selection, and SMS only where enabled and available.
+- Confirm login identifiers and OTPs do not appear in browser persistence,
+  application logs, QR payloads, contract calls, or onchain display names.
+- Confirm the Privy production origin is exact and no generic Vercel wildcard is
+  allowed.
 - Confirm source verification and frontend address/chain coherence.
 - Search build output and Vercel configuration for private-key material.
 - Review all user-facing security claims against this document.

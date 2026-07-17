@@ -33,7 +33,7 @@ const principles = [
     icon: WalletCards,
     title: "The wallet is the membership",
     description:
-      "Passes are non-transferable records issued to a wallet. There is no second account, password, or profile to keep in sync.",
+      "Passes are non-transferable records issued to a wallet. Connect an external wallet or use a Privy embedded wallet; the active address remains the onchain identity.",
   },
   {
     icon: ScanLine,
@@ -45,7 +45,7 @@ const principles = [
     icon: LockKeyhole,
     title: "Privacy is a product boundary",
     description:
-      "The app does not ask for legal names, email, phone, photos, biometrics, or location history. Public wallet data stays on Monad.",
+      "Privy may process optional email or available SMS login, but Unisky Pass never writes those identifiers onchain or stores them in its own database. Public wallet data stays on Monad.",
   },
 ];
 
@@ -80,6 +80,7 @@ const honestLimits = [
   "Deliberate wallet sharing is not prevented. Anyone with signing control of the holder wallet can create a valid response.",
   "Issuer registration is permissionless. A pass in a wallet is not an endorsement, and unsolicited pass records are possible.",
   "Wallet relationships, display names, and pass timing are public and permanent onchain.",
+  "Email or SMS login authenticates access to a wallet through Privy; it does not verify a person's legal or physical identity.",
 ];
 
 export default function AboutPage() {
@@ -89,7 +90,7 @@ export default function AboutPage() {
         <PageIntro
           eyebrow="About Unisky Pass"
           title="Membership should be a proof, not another profile."
-          description="Unisky Pass gives places a direct way to issue time-based membership and gives members a fast way to prove wallet control at the door. No payment custody, no identity database, and no static pass screenshot presented as security."
+          description="Unisky Pass gives places a direct way to issue time-based membership and gives members a fast way to prove wallet control at the door. Connect a wallet or use passwordless Privy onboarding—without payment custody or a first-party identity database."
           action={
             <Link
               href="/docs"

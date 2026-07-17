@@ -1,10 +1,16 @@
 "use client";
 
+import { PrivyProvider } from "@privy-io/react-auth";
+import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
-import { WagmiProvider } from "wagmi";
 import { NetworkProvider } from "@/components/network-provider";
 import { wagmiConfig } from "@/lib/chain/config";
+import {
+  privyAppId,
+  privyClientId,
+  privyConfig,
+} from "@/lib/privy/config";
 import { ToastProvider } from "@/components/toast-provider";
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -22,12 +28,18 @@ export function Providers({ children }: { children: ReactNode }) {
   );
 
   return (
-    <WagmiProvider config={wagmiConfig} reconnectOnMount>
+    <PrivyProvider
+      appId={privyAppId}
+      clientId={privyClientId}
+      config={privyConfig}
+    >
       <QueryClientProvider client={queryClient}>
-        <NetworkProvider>
-          <ToastProvider>{children}</ToastProvider>
-        </NetworkProvider>
+        <WagmiProvider config={wagmiConfig}>
+          <NetworkProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </NetworkProvider>
+        </WagmiProvider>
       </QueryClientProvider>
-    </WagmiProvider>
+    </PrivyProvider>
   );
 }

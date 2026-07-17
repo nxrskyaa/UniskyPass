@@ -2,7 +2,7 @@
 
 ## Objectives
 
-Testing must prove four things:
+Testing must prove five things:
 
 1. `UniskyPassRegistry` enforces its final authorization, time, revocation,
    event, and no-normal-fund-transfer invariants.
@@ -12,6 +12,8 @@ Testing must prove four things:
    proofs, while the happy path needs no member transaction.
 4. The complete flow works over HTTPS with real wallets and phone cameras on
    testnet before a human deploys mainnet.
+5. Privy login creates or restores the intended active wallet without exposing
+   optional email/phone identifiers to application persistence or Monad.
 
 This plan distinguishes automated gates from manual scenarios. Do not mark a
 manual scenario passed merely because the build succeeds.
@@ -31,6 +33,11 @@ to the same deployment during a test.
 For runtime selection, the connected wallet must match the selected deployment.
 Switching networks must also switch the registry, RPC, explorer, and query scope
 together.
+
+The Privy App ID and optional Client ID are public environment values. Test with
+Email and Wallet enabled; test SMS only when it is enabled and available for the
+configured plan and country. The production origin must be exact, and no test
+may rely on a generic `https://*.vercel.app` allow rule.
 
 ## Standard automated gates
 
@@ -144,6 +151,12 @@ pure logic:
 - query/RPC failure can never fall back to cached validity; and
 - distinct error-code-to-human-message mapping.
 
+Privy/wagmi integration tests should cover initialization readiness, Email OTP,
+external-wallet login, embedded-wallet creation for a user without a wallet,
+returning-login recovery of the same address, logout, multiple linked wallets,
+active-wallet selection, and blocked account changes during active/uncertain
+transactions. Add SMS cases only when that method is actually available.
+
 Mock wallet/RPC integration should cover transaction confirmation, pending,
 user rejection, contract revert, malformed response, and unavailable RPC. A
 mocked oversized/failed `getHolderPasses` response must render an availability
@@ -154,6 +167,16 @@ enumeration concern.
 
 Verify on both a narrow phone viewport and desktop:
 
+- Privy initializing without a false disconnected flash;
+- Email OTP success, invalid/expired OTP, cancellation, and retry;
+- external-wallet login and returning embedded-wallet login;
+- SMS success/failure only where enabled and available, with Email/Wallet
+  fallback when unavailable;
+- embedded-wallet creation failure and provider-unavailable recovery;
+- multiple linked wallets, explicit active-wallet selection, and account-state
+  reset after switching;
+- logout, wallet switching, and connecting another wallet blocked while a
+  transaction is active or uncertain;
 - wallet disconnected;
 - wrong network and successful network switch;
 - missing/mixed environment configuration;
@@ -226,21 +249,27 @@ Repeat with expiry by advancing/waiting past `expiresAt` where practical.
 Use a verified testnet deployment, two wallets, and real phone cameras over a
 Vercel HTTPS preview:
 
-1. Register issuer and create a program.
-2. Issue an active pass to the second wallet.
-3. Confirm it appears in My Passes.
-4. Complete the challenge/sign/response/verification loop.
-5. Confirm no member transaction or gas request occurs.
-6. Re-scan and observe `Challenge already used`.
-7. Test expired challenge, wrong member wallet, and wrong program.
-8. Revoke between signature and scan and confirm the fresh-read failure.
-9. Exercise camera denial/recovery on at least one mobile browser.
-10. Confirm explorer links point to testnet and the verified contract.
-11. Switch to mainnet and confirm testnet programs/passes disappear; switch back
+1. Complete an Email login and confirm its embedded wallet address is visible;
+   complete external-wallet login on the other device. Test SMS only where it is
+   enabled and available.
+2. Register the issuer and create a program.
+3. Issue an active pass to the second wallet.
+4. Confirm it appears in My Passes.
+5. Complete the challenge/sign/response/verification loop.
+6. Confirm no member transaction or gas request occurs.
+7. Re-scan and observe `Challenge already used`.
+8. Test expired challenge, wrong member wallet, and wrong program.
+9. Revoke between signature and scan and confirm the fresh-read failure.
+10. Exercise camera denial/recovery on at least one mobile browser.
+11. Confirm explorer links point to testnet and the verified contract.
+12. Switch to mainnet and confirm testnet programs/passes disappear; switch back
     and confirm they return only from testnet query state.
-12. Reject a wallet network-switch request and confirm the app keeps the prior
+13. Reject a wallet network-switch request and confirm the app keeps the prior
     deployment selected.
-13. Attempt to use a QR created on the other network and confirm `Wrong network`
+14. Log out and back in through Privy; confirm the embedded address is unchanged
+    and no login identifier appears in local/session storage, QR data, logs, or
+    contract calls.
+15. Attempt to use a QR created on the other network and confirm `Wrong network`
     or `Wrong contract`, never `VALID`.
 
 Do not proceed to mainnet if any core or security scenario fails.
@@ -254,10 +283,13 @@ configuration, and a green build:
 - repeat issuer registration, program, issuance, My Passes, and complete
   check-in using controlled demo wallets;
 - repeat same-session replay rejection and post-sign revocation rejection;
+- repeat Email and external-wallet login, returning embedded-wallet recovery,
+  logout, and active-wallet selection; test SMS only if production enables it;
 - verify transaction hashes and contract source on the mainnet explorer;
 - switch to testnet and confirm only testnet state, address, and explorer links
   are shown, then switch back to mainnet; and
-- inspect the production environment to confirm no deployer key is present.
+- inspect the production environment to confirm no deployer key or Privy secret
+  is present; only the public App ID and optional Client ID may be exposed.
 
 ## Evidence and sign-off
 
@@ -272,7 +304,8 @@ Record only public/non-sensitive evidence:
 - manual matrix pass/fail notes and device/browser versions.
 
 Never record private keys, seed phrases, full environment dumps, or unnecessary
-full response signatures.
+full response signatures. Do not record email addresses, phone numbers, OTPs, or
+Privy access tokens as test evidence.
 
 Release sign-off requires all automated gates green, the complete testnet matrix,
 human-approved mainnet deployment, and a passing production smoke test.

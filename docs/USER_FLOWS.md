@@ -3,17 +3,21 @@
 ## Shared entry and network handling
 
 1. The visitor opens the landing page and can understand the product before
-   connecting a wallet.
+   logging in or connecting a wallet.
 2. The visitor chooses **My Passes** or **Issuer Dashboard**. Either mode may be
    used by the same wallet.
-3. A wallet connection request is made only after an explicit user action.
-4. The visitor selects Monad Mainnet or Monad Testnet. The app resolves the
+3. After explicit user action, Privy offers Email OTP, external Wallet, and SMS
+   OTP only where it is enabled and available for the configured plan/region.
+4. An email/SMS user without a wallet receives or restores a Privy embedded EVM
+   wallet. An external-wallet user keeps that wallet. The app displays the
+   shortened active wallet address; email/phone is not membership identity.
+5. The visitor selects Monad Mainnet or Monad Testnet. The app resolves the
    chain, RPC, explorer, and registry address from that deployment selection.
-5. The app compares the connected wallet chain with the selected chain. If they
+6. The app compares the active wallet chain with the selected chain. If they
    differ, it shows the expected network and a switch action. Reads
    that could mislead the user, signatures, and writes remain blocked until the
    network is correct.
-6. If the RPC or contract address is missing or unavailable, the app shows a
+7. If the RPC or contract address is missing or unavailable, the app shows a
    configuration/read error with retry; it never substitutes mock validity.
 
 Production defaults to Monad mainnet (`143`) and Preview defaults to testnet
@@ -21,9 +25,17 @@ Production defaults to Monad mainnet (`143`) and Preview defaults to testnet
 state exists only on mainnet; testnet state exists only on testnet. Issuer and
 member must select and connect to the same network for check-in.
 
+The same embedded EVM address can operate on both Monad networks, but issuer,
+program, and pass records remain separate in the two registries. Switching the
+network never copies or migrates membership. When multiple wallets are linked,
+the user explicitly chooses which address is active. Login, logout, connecting
+another wallet, and active-wallet changes are blocked while a transaction is
+active or its outcome is uncertain.
+
 ## Issuer onboarding
 
-1. The user opens **Issuer Dashboard** and connects a wallet.
+1. The user opens **Issuer Dashboard** and logs in or connects the wallet that
+   will control the issuer.
 2. The app reads `isIssuer(wallet)`.
 3. An unregistered wallet sees a short registration form for a non-sensitive
    issuer display name.
@@ -64,7 +76,8 @@ The same wallet can still use My Passes.
 
 ## View My Passes
 
-1. A member connects the holder wallet.
+1. A member logs in or connects the holder wallet and confirms that its displayed
+   address matches the address used during issuance.
 2. The app reads `getHolderPasses(holder)`.
 3. It batches `getPass` and `getProgram` reads through Multicall3 where useful.
 4. An empty array renders a friendly empty state, not an error.
@@ -153,7 +166,13 @@ MVP limitation, not global replay protection.
 
 | State | User-facing outcome | Recovery |
 | --- | --- | --- |
-| Wallet disconnected | Ask the user to connect the required wallet. | Connect and retry. |
+| Privy initializing | Keep wallet-dependent actions unavailable without flashing a false disconnected state. | Wait for Privy and wallet readiness. |
+| Email/SMS OTP invalid or expired | Explain that login was not completed. | Request a new code and retry. |
+| SMS unavailable | Do not promise or display an unusable phone flow. | Use Email or Wallet, or enable a supported plan/region in Privy. |
+| Login cancelled or provider unavailable | Explain that no wallet session was created. | Retry explicitly or choose another enabled method. |
+| Embedded wallet unavailable | Do not enter issuer/member flows without an active address. | Retry login/wallet creation or connect an external wallet. |
+| Wallet disconnected | Ask the user to log in or connect the required wallet. | Log in/connect and retry. |
+| Wrong active wallet | Show the active address and expected holder/issuer role. | Select or connect the intended wallet, then retry. |
 | Wrong network | Name the expected Monad network. | Switch network; do not continue on mixed config. |
 | Transaction rejected | Explain that no change was made. | Retry only on user action. |
 | Transaction reverted | Surface the mapped contract reason. | Correct input/authority and retry. |
@@ -175,7 +194,10 @@ MVP limitation, not global replay protection.
 
 ## Exit and privacy behavior
 
-Disconnecting removes wallet-session UI state but cannot delete public onchain
-records. Closing the scanner tab ends the useful lifetime of its active challenge
-and session replay ledger. Camera frames and signed payloads are not uploaded to
-an Unisky Pass backend because no such backend exists.
+Logging out ends the local Privy session. Disconnecting or switching an external
+wallet changes wallet connection state. Neither action deletes the Privy user
+record or public onchain records. Closing the scanner tab ends the useful
+lifetime of its active challenge and session replay ledger. Camera frames,
+email/phone identifiers, OTPs, and signed payloads are not uploaded to or stored
+by a first-party Unisky Pass backend because no such backend exists; enabled
+login identifiers are processed independently by Privy.

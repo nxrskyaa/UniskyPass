@@ -6,6 +6,7 @@ import {
   Check,
   ExternalLink,
   Code2,
+  KeyRound,
   Rocket,
   ShieldAlert,
   Sparkles,
@@ -28,6 +29,26 @@ export const metadata: Metadata = {
 };
 
 const releases = [
+  {
+    date: "2026-07-17",
+    eyebrow: "Onboarding update",
+    title: "Privy wallet onboarding",
+    status: "AUTH",
+    icon: KeyRound,
+    accent: "bg-coral",
+    address: "0x935D7681Fd0454f38848925fc03d918dA036Ed99",
+    explorer:
+      "https://monadscan.com/address/0x935D7681Fd0454f38848925fc03d918dA036Ed99",
+    summary:
+      "Unisky Pass adds passwordless onboarding without changing the membership model: every issuer action, pass, and check-in proof still resolves to one active wallet address on Monad.",
+    highlights: [
+      "Privy offers Email and external-wallet login, with SMS shown only where it is enabled and available for the configured plan and country.",
+      "Users without an external wallet receive or restore an embedded EVM wallet; returning login must recover the same active address.",
+      "The active wallet can use Monad mainnet and testnet, while issuer, program, pass, query, and EIP-712 state remain isolated by chain and registry.",
+      "The Privy App ID and optional Client ID are public browser identifiers protected by exact allowed origins; no Privy secret is required by the client-only app.",
+      "Privy processes optional login identifiers, but Unisky Pass does not persist email/phone data or write it onchain.",
+    ],
+  },
   {
     date: "2026-07-17",
     eyebrow: "Production release",
@@ -76,7 +97,7 @@ const launchLimits = [
   "Deliberate wallet sharing is not prevented.",
   "Issuer registration is permissionless, and wallets can receive unsolicited pass records.",
   "Wallet relationships and pass timing are public and permanent onchain.",
-  "The MVP has no backend, database, payments, analytics, or onchain check-in history.",
+  "The MVP has no first-party backend or account database, payments, analytics, or onchain check-in history; Privy independently handles optional authentication and embedded wallets.",
 ];
 
 export default function ChangelogPage() {

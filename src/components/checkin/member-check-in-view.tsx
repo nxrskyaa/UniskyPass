@@ -2,7 +2,7 @@
 
 import { Check, CircleAlert, PenLine, RefreshCw, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useAccount, useSignTypedData } from "wagmi";
+import { useSignTypedData } from "wagmi";
 import { ContractSetupNotice } from "@/components/contract-setup-notice";
 import { Countdown } from "@/components/countdown";
 import { EmptyState } from "@/components/empty-state";
@@ -14,16 +14,18 @@ import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Select } from "@/components/ui/field";
-import { WalletButton } from "@/components/wallet-button";
+import { WalletSessionNotice } from "@/components/wallet-session-notice";
 import { buildCheckInTypedData, CHECK_IN_FAILURE_MESSAGES } from "@/lib/checkin";
 import { explainWalletError } from "@/lib/chain/errors";
 import { formatDate } from "@/lib/chain/format";
 import { decodeCheckInChallenge, encodeCheckInResponse } from "@/lib/qr";
 import { useMemberPasses } from "@/hooks/use-member-passes";
+import { useWalletSession } from "@/hooks/use-wallet-session";
 import type { CheckInChallenge } from "@/types/checkin";
 
 export function MemberCheckInView({ preferredPassId }: { preferredPassId?: string }) {
-  const { address, isConnected, chainId } = useAccount();
+  const { address, chainId, status: walletSessionStatus } =
+    useWalletSession();
   const { deployment, selectedChainId } = useNetwork();
   const contractAddress = deployment.contractAddress;
   const networkConfigurationError = deployment.configurationError;
@@ -66,8 +68,12 @@ export function MemberCheckInView({ preferredPassId }: { preferredPassId?: strin
         <div className="mt-6"><ContractSetupNotice /></div>
 
         <div className="mt-7">
-          {!isConnected ? (
-            <EmptyState title="Connect the pass holder wallet" description="The signature must come from the same wallet that holds the membership pass." action={<WalletButton />} />
+          {walletSessionStatus !== "ready" ? (
+            <WalletSessionNotice
+              status={walletSessionStatus}
+              signedOutTitle="Connect the pass holder wallet"
+              signedOutDescription="The signature must come from the same wallet that holds the membership pass."
+            />
           ) : networkConfigurationError ? (
             <EmptyState title="Network configuration is invalid" description={networkConfigurationError} />
           ) : chainId !== selectedChainId ? (

@@ -8,8 +8,11 @@
 - A human deploys mainnet using their own key in their local Foundry process.
 - The deployer key is never committed, pasted into application files, prefixed
   `NEXT_PUBLIC_`, imported by Next.js, or configured in Vercel.
-- Vercel receives only the public default chain plus the RPC, explorer, and
-  verified contract address for each supported network.
+- Vercel receives only public frontend configuration: the default chain, RPC,
+  explorer, verified contract address for each supported network, Privy App ID,
+  and optional Privy Client ID. No Privy secret is used.
+- Privy allows only exact controlled development, preview, and production
+  origins; generic Vercel preview wildcards are forbidden.
 - The frontend is deployed only after the contract address is known and verified.
 
 ## Network values
@@ -37,6 +40,10 @@ There are no constructor arguments.
 - The human-controlled deployer wallet has sufficient MON on the target network.
 - The human has reviewed the deployer address and target chain.
 - Vercel CLI access is authenticated for the intended account/project.
+- The Privy Dashboard app is controlled by the release owner, with Email and
+  Wallet enabled, SMS enabled only where the plan/region supports it, embedded
+  EVM wallet creation enabled for users without wallets, and both Monad networks
+  configured.
 - No deployed address is copied from an unverified log or chat message.
 
 Every `forge script` deployment command must pass
@@ -146,6 +153,9 @@ deployments and choose testnet as the initial local default:
 
 ```dotenv
 NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID=10143
+NEXT_PUBLIC_PRIVY_APP_ID=cmrojn0js00bg0djs58eirybr
+# Optional; set only after creating an environment-specific Privy app client.
+NEXT_PUBLIC_PRIVY_CLIENT_ID=
 NEXT_PUBLIC_MONAD_MAINNET_RPC_URL=https://rpc.monad.xyz
 NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL=https://monadscan.com
 NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS=0x935D7681Fd0454f38848925fc03d918dA036Ed99
@@ -154,8 +164,10 @@ NEXT_PUBLIC_MONAD_TESTNET_EXPLORER_URL=https://testnet.monadscan.com
 NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS=0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c7ef2B737690
 ```
 
-Do not put `DEPLOYER_PRIVATE_KEY` in `.env.local`. Rebuild after changing public
-variables because Next.js may inline them:
+The Privy App ID and optional Client ID are public browser identifiers. Do not
+put `DEPLOYER_PRIVATE_KEY`, a Privy App Secret, or a Privy authorization key in
+`.env.local`. This client-only flow does not need those Privy secrets. Rebuild
+after changing public variables because Next.js may inline them:
 
 ```powershell
 npm run lint
@@ -177,6 +189,9 @@ dashboard or the interactive CLI:
 
 ```powershell
 npx vercel env add NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID preview
+npx vercel env add NEXT_PUBLIC_PRIVY_APP_ID preview
+# Optional, only if a Preview app client exists:
+npx vercel env add NEXT_PUBLIC_PRIVY_CLIENT_ID preview
 npx vercel env add NEXT_PUBLIC_MONAD_MAINNET_RPC_URL preview
 npx vercel env add NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL preview
 npx vercel env add NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS preview
@@ -185,8 +200,9 @@ npx vercel env add NEXT_PUBLIC_MONAD_TESTNET_EXPLORER_URL preview
 npx vercel env add NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS preview
 ```
 
-Enter the seven public values from Stage 4, keeping `10143` as the Preview
-default. Never add the deployer key. Create an HTTPS preview:
+Enter the public values from Stage 4, keeping `10143` as the Preview default.
+The Client ID may remain unset when no Preview app client exists. Never add the
+deployer key or a Privy secret. Create an HTTPS preview:
 
 ```powershell
 npx vercel
@@ -194,20 +210,39 @@ npx vercel
 
 Environment changes apply only to new deployments, so redeploy after any edit.
 
+In Privy Dashboard before opening the preview:
+
+1. Enable Email and Wallet login. Enable SMS only after confirming the target
+   country is available for the current plan/provider.
+2. Configure embedded Ethereum wallets with creation on login for users without
+   a wallet.
+3. Support Monad testnet (`10143`) and mainnet (`143`), with testnet as the
+   Preview default.
+4. Allow the exact Preview HTTPS origin, or use an environment-specific app
+   client/stable preview domain controlled by the project owner.
+5. For local QA only, allow the exact `http://localhost:3000` origin and remove
+   it when it is no longer needed.
+
+Never allow `https://*.vercel.app`: unrelated projects can use that namespace.
+
 ## Stage 6 — Mandatory testnet acceptance gate
 
 On the Vercel preview, use two wallets and real phone cameras to complete:
 
-1. issuer registration;
-2. program creation;
-3. pass issuance to the member;
-4. member pass discovery and detail;
-5. challenge QR creation and countdown;
-6. member EIP-712 signature with no transaction;
-7. response scan and fresh onchain `VALID`;
-8. same-session replay rejection;
-9. expired/wrong-wallet/wrong-program errors; and
-10. revocation between signature and verification, producing `Pass revoked`.
+1. Email OTP login, embedded-wallet creation, logout/login recovery of the same
+   address, and external-wallet login;
+2. SMS OTP only where it is enabled and available, otherwise a clear Email or
+   Wallet fallback;
+3. issuer registration;
+4. program creation;
+5. pass issuance to the member;
+6. member pass discovery and detail;
+7. challenge QR creation and countdown;
+8. member EIP-712 signature with no transaction;
+9. response scan and fresh onchain `VALID`;
+10. same-session replay rejection;
+11. expired/wrong-wallet/wrong-program errors; and
+12. revocation between signature and verification, producing `Pass revoked`.
 
 Also run the rest of `TEST_PLAN.md`, inspect mobile layout/camera permissions,
 and confirm every link stays on testnet. Stop here if any core/security condition
@@ -259,6 +294,9 @@ Add or replace these **Production** environment variables:
 
 ```powershell
 npx vercel env add NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID production
+npx vercel env add NEXT_PUBLIC_PRIVY_APP_ID production
+# Optional, only if a Production app client exists:
+npx vercel env add NEXT_PUBLIC_PRIVY_CLIENT_ID production
 npx vercel env add NEXT_PUBLIC_MONAD_MAINNET_RPC_URL production
 npx vercel env add NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL production
 npx vercel env add NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS production
@@ -271,6 +309,9 @@ Values:
 
 ```dotenv
 NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID=143
+NEXT_PUBLIC_PRIVY_APP_ID=cmrojn0js00bg0djs58eirybr
+# Optional; set only to the Production app-client ID from Privy Dashboard.
+NEXT_PUBLIC_PRIVY_CLIENT_ID=
 NEXT_PUBLIC_MONAD_MAINNET_RPC_URL=https://rpc.monad.xyz
 NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL=https://monadscan.com
 NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS=0x935D7681Fd0454f38848925fc03d918dA036Ed99
@@ -281,7 +322,14 @@ NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS=0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c
 
 If a variable already exists, update/remove-and-re-add it through the dashboard
 or CLI rather than retaining a stale value. Inspect the environment list and
-confirm `DEPLOYER_PRIVATE_KEY` is absent. Deploy a new production build:
+confirm `DEPLOYER_PRIVATE_KEY`, Privy App Secret, and Privy authorization keys
+are absent. Only the public Privy App ID and optional Client ID belong in the
+frontend environment.
+
+In Privy Dashboard, allow the exact production origin
+`https://unisky-pass.vercel.app`, set mainnet (`143`) as the default supported
+chain while retaining testnet (`10143`), and re-check the enabled login methods.
+Do not add `https://*.vercel.app`. Then deploy a new production build:
 
 ```powershell
 npx vercel --prod
@@ -295,6 +343,8 @@ to this deployment and HTTPS/camera permission works.
 Against the production URL and mainnet verified contract:
 
 - confirm chain ID `143`, mainnet explorer links, and expected contract address;
+- complete Email and external-wallet login, embedded-wallet logout/login
+  recovery, and SMS only if production actually enables it;
 - connect issuer/member demo wallets and complete the full core loop;
 - confirm the member gets no transaction request during check-in;
 - confirm same-session replay rejection;
@@ -303,6 +353,8 @@ Against the production URL and mainnet verified contract:
 - switch to testnet and confirm the address, explorer, passes, programs, queries,
   and QR domain all switch together, then return to mainnet;
 - check real-phone camera permissions and scan reliability; and
+- confirm email/phone identifiers and OTPs are absent from browser persistence,
+  application logs, QR payloads, and onchain data; and
 - confirm UI/security copy states session-only replay and wallet-sharing limits.
 
 The definition of done is the complete loop passing on the Vercel production URL
@@ -342,4 +394,5 @@ Retain only public evidence:
 - manual device/browser test notes.
 
 Never retain private keys, seed phrases, environment dumps, or unnecessary full
-signed response payloads.
+signed response payloads. Never retain login email addresses, phone numbers,
+OTPs, or Privy access tokens in the release record.

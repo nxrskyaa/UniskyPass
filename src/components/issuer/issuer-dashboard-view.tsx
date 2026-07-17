@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BadgeCheck, CircleAlert, Layers3, QrCode, RefreshCw, TicketCheck, Users } from "lucide-react";
-import { useAccount } from "wagmi";
+import { CircleAlert, Layers3, QrCode, RefreshCw, TicketCheck, Users } from "lucide-react";
 import { ContractSetupNotice } from "@/components/contract-setup-notice";
 import { useNetwork } from "@/components/network-provider";
 import { EmptyState } from "@/components/empty-state";
@@ -14,12 +13,14 @@ import { RegisterIssuerForm } from "@/components/issuer/register-issuer-form";
 import { PageIntro } from "@/components/page-intro";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { WalletButton } from "@/components/wallet-button";
+import { WalletSessionNotice } from "@/components/wallet-session-notice";
 import { formatDate } from "@/lib/chain/format";
 import { useIssuerDashboard } from "@/hooks/use-issuer-dashboard";
+import { useWalletSession } from "@/hooks/use-wallet-session";
 
 export function IssuerDashboardView() {
-  const { address, isConnected, chainId } = useAccount();
+  const { address, chainId, status: walletSessionStatus } =
+    useWalletSession();
   const { deployment, selectedChainId } = useNetwork();
   const contractAddress = deployment.contractAddress;
   const networkConfigurationError = deployment.configurationError;
@@ -45,12 +46,11 @@ export function IssuerDashboardView() {
         <div className="mt-6"><ContractSetupNotice /></div>
 
         <div className="mt-7">
-          {!isConnected ? (
-            <EmptyState
-              icon={<BadgeCheck className="size-5" />}
-              title="Connect the wallet that will issue passes"
-              description="The contract has no platform admin. This wallet alone controls the programs and passes it creates."
-              action={<WalletButton />}
+          {walletSessionStatus !== "ready" ? (
+            <WalletSessionNotice
+              status={walletSessionStatus}
+              signedOutTitle="Connect the wallet that will issue passes"
+              signedOutDescription="The contract has no platform admin. This wallet alone controls the programs and passes it creates."
             />
           ) : networkConfigurationError ? (
             <EmptyState title="Network configuration is invalid" description={networkConfigurationError} />

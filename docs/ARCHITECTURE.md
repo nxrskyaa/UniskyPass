@@ -3,17 +3,19 @@
 ## System context
 
 Unisky Pass is a browser application backed directly by Monad. Vercel serves the
-Next.js frontend, a wallet provider supplies accounts and signatures, and a
-Monad RPC supplies contract reads, estimates, transaction submission, and
-receipts. There is no application backend or database.
+Next.js frontend. Privy supplies optional passwordless authentication, embedded
+EVM wallets, and external-wallet connection; wagmi exposes the active account to
+the application. A Monad RPC supplies contract reads, estimates, transaction
+submission, and receipts. There is no first-party application backend or
+database.
 
 ```text
-                         wallet provider
-                  connect / sign / transactions
-                              ^
-                              |
-camera <-> Next.js app in browser <-> configured Monad RPC <-> UniskyPassRegistry
- local       served by Vercel       reads/writes/receipts     permanent state
+                  Privy authentication / wallet layer
+             email or available SMS / embedded or external wallet
+                                  ^
+                                  |
+camera <-> Next.js app + wagmi <-> configured Monad RPC <-> UniskyPassRegistry
+ local        served by Vercel      reads/writes/receipts     permanent state
  only
 
 React memory: active scanner challenge (untrusted, current page only)
@@ -22,8 +24,10 @@ localStorage: optional drafts/preferences only (untrusted, never proof of validi
 ```
 
 Vercel is a frontend delivery boundary, not a trusted application-state service.
-The app must not add API routes, server actions, server accounts, or persistence
-that become required for pass validity or check-in.
+Privy is an independent authentication and wallet provider, not the source of
+membership validity. The app must not add API routes, server actions,
+first-party server accounts, or persistence that become required for pass
+validity or check-in.
 
 ## Source layout
 
@@ -59,13 +63,16 @@ does not need extra abstraction layers.
 | Data | Location | Lifetime | Trust treatment |
 | --- | --- | --- | --- |
 | Issuers, programs, passes, timestamps, revocation | `UniskyPassRegistry` | Permanent/public | Source of truth after an RPC read |
-| Connected account and chain | Wallet provider | Wallet session | Re-check before actions |
+| Privy authentication session and linked login methods | Privy | Provider-defined session | Offchain onboarding only; never membership validity |
+| Embedded-wallet material and recovery | Privy wallet infrastructure | Provider-defined | Never exposed to or persisted by Unisky Pass |
+| Active account and chain | Privy plus wallet provider, surfaced through wagmi | Wallet session | Re-check before actions and after active-wallet changes |
 | Active scanner challenge | React memory | Current scanner page | Match exactly, but validate every field |
 | Used challenge nonces | `sessionStorage` and memory | Current tab session | Local replay control only; not global truth |
 | Draft form values / UI preferences | memory or `localStorage` | Local/browser-defined | Never proof of authority or validity |
 | Selected chain | React context plus validated `localStorage` preference | Browser | UI preference only; wallet must still match |
 | Chain, RPC, explorer, contract address | Immutable chain-keyed deployment map built from public configuration | Deployment | Resolve together; never mix fields across chains |
 | Deployer key | Human's local Foundry process environment | Deployment command only | Secret; never available to frontend/Vercel |
+| Privy App ID and optional Client ID | Public frontend configuration | Deployment | Public identifiers; restrict with exact dashboard origins |
 
 All browser input, storage, QR content, wallet state, and RPC responses cross a
 trust boundary. The scanner validates structure and binding before using them.
@@ -89,6 +96,20 @@ writes rather than silently mixing semantics.
 The network selector stores only a preference in browser storage. Changing it
 switches the connected wallet first, then clears network-scoped query/UI state.
 If the wallet rejects the switch, the prior deployment remains selected.
+
+Privy configures both Monad deployments as supported EVM chains. Production
+initializes embedded wallets on mainnet by default and Preview initializes them
+on testnet, while the runtime selector can switch either wallet type. An
+embedded EVM wallet normally uses the same address on both Monad networks, but
+issuer registration, programs, passes, and check-in domains remain isolated by
+chain ID and registry address. Network selection never migrates onchain state.
+
+Privy may expose multiple linked wallets. Privy controls connection and embedded
+wallet creation; wagmi remains the transaction, read, chain-switching, and
+EIP-712 interface. Exactly one wallet is active for application hooks. Logout,
+connecting another wallet, and changing the active wallet are blocked while a
+transaction is active or has an uncertain outcome, and an accepted account
+change clears account-scoped query and scanner state.
 
 Multicall3-backed reads use the chain's declared canonical deployment. On Monad
 mainnet the canonical address is
@@ -164,10 +185,13 @@ resistance but is explicitly not a cross-device or durable nonce authority.
 ## Privacy model
 
 Camera decoding and signature verification run in the browser. The application
-does not upload camera frames or create user profiles. Public onchain data is
-limited to wallet relationships, short issuer/program names, pass timing, and
-revocation state. RPC and wallet providers remain independent infrastructure
-trust boundaries and may observe network metadata.
+does not upload camera frames or maintain a first-party user-profile database.
+When a user selects Email or available SMS login, Privy processes that login
+identifier, OTP, provider session, and linked-wallet record. Unisky Pass does
+not write email or phone data onchain, persist it in browser storage, or log it.
+Public onchain data is limited to wallet relationships, short issuer/program
+names, pass timing, and revocation state. Privy, RPC, and wallet providers remain
+independent infrastructure trust boundaries and may observe network metadata.
 
 ## Deployment model
 
@@ -177,9 +201,13 @@ trust boundaries and may observe network metadata.
 3. A human uses their own local `DEPLOYER_PRIVATE_KEY` to deploy the unchanged
    contract to mainnet.
 4. The verification script posts Foundry artifacts to the Monad verification API.
-5. Vercel receives the public deployment values for both networks; Preview
+5. Vercel receives the public deployment values for both networks plus the
+   public Privy App ID and optional environment-specific Client ID; Preview
    defaults to testnet and Production defaults to mainnet.
-6. The production URL completes the same smoke test on mainnet, then verifies
+6. The Privy Dashboard enables Email and Wallet, conditionally enables SMS only
+   where supported, creates embedded EVM wallets for users without a wallet, and
+   allows the exact localhost, preview, and production origins in use.
+7. The production URL completes the same smoke test on mainnet, then verifies
    that switching to testnet exposes only testnet state.
 
 There is no automated mainnet key custody and no server component that can alter
@@ -191,6 +219,8 @@ contract state on a user's behalf.
 - RPC failure never degrades to a cached `VALID` result.
 - Camera failure permits retry but not unvalidated manual success.
 - Contract writes are never considered complete before confirmation and refresh.
+- Privy readiness, login, OTP, embedded-wallet creation, and active-wallet
+  failures stop wallet-dependent flows with a specific retryable state.
 - A malformed or unknown QR version is rejected before signature recovery or RPC
   access.
 - If a security concern is found in the final contract, document it and stop; do

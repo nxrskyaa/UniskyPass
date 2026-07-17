@@ -1,5 +1,5 @@
-import { createConfig, http } from "wagmi";
-import { injected } from "wagmi/connectors";
+import { createConfig } from "@privy-io/wagmi";
+import { http } from "wagmi";
 import {
   defineChain,
   getAddress,
@@ -219,12 +219,6 @@ export async function assertRpcChain(
 
 export const wagmiConfig = createConfig({
   chains: [monadMainnet, monadTestNetwork],
-  connectors: [
-    injected({
-      shimDisconnect: true,
-    }),
-  ],
-  multiInjectedProviderDiscovery: true,
   ssr: true,
   transports: {
     [monadMainnet.id]: http(

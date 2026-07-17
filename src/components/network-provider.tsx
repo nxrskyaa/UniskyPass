@@ -3,6 +3,7 @@
 import {
   Fragment,
   createContext,
+  startTransition,
   useCallback,
   useContext,
   useEffect,
@@ -79,9 +80,11 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const stored = readStoredChainId();
     if (stored !== undefined) {
-      setSelectedChainId((current) =>
-        stored === current ? current : stored,
-      );
+      startTransition(() => {
+        setSelectedChainId((current) =>
+          stored === current ? current : stored,
+        );
+      });
     }
   }, []);
 

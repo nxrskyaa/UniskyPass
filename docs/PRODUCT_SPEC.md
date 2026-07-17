@@ -11,8 +11,10 @@ prove current ownership at check-in.
 Tagline: **One wallet for every place you belong.**
 
 The product is not an NFT platform, payment processor, subscription service, or
-identity provider. The contract holds no funds. A member check-in is a wallet
-signature, not a blockchain transaction.
+legal-identity system. Privy is an optional passwordless authentication and
+embedded-wallet provider; the contract still recognizes only wallet addresses.
+The contract holds no funds. A member check-in is a wallet signature, not a
+blockchain transaction.
 
 ## Problem and promise
 
@@ -34,7 +36,9 @@ the MVP.
 
 ### Member / My Passes
 
-A member connects the wallet to which a pass was issued. The member can:
+A member connects an external wallet or logs in through Privy to create or
+restore an embedded EVM wallet. The active wallet must be the address to which a
+pass was issued. The member can:
 
 - list passes for the connected wallet;
 - see issuer, program, validity period, and status for each pass;
@@ -46,7 +50,7 @@ A member connects the wallet to which a pass was issued. The member can:
 
 ### Issuer / Issuer Dashboard
 
-An issuer connects a wallet and can:
+An issuer connects an external wallet or uses a Privy embedded wallet and can:
 
 - register an issuer profile and update its short display name;
 - create a program with a name and duration;
@@ -95,7 +99,7 @@ Expiry is never shortened.
 
 | ID | Requirement |
 | --- | --- |
-| `FR-01` | Connect and disconnect a wallet, show its shortened address, and block sensitive actions on the wrong network. |
+| `FR-01` | Log in or connect a wallet, show the active shortened address, log out safely, and block sensitive actions on the wrong network. |
 | `FR-02` | Switch between My Passes and Issuer Dashboard without assigning exclusive roles. |
 | `FR-03` | Register an issuer and update its non-sensitive display name. |
 | `FR-04` | Create and activate/deactivate a time-based program. |
@@ -109,6 +113,9 @@ Expiry is never shortened.
 | `FR-12` | Verify the response in the documented order and perform uncached `getPass` plus `isPassValidFor` reads before showing `VALID`. |
 | `FR-13` | Mark a successfully verified nonce used in the current browser session and reject its reuse. |
 | `FR-14` | Show a distinct, human-readable message for every documented wallet, network, QR, signature, pass, RPC, camera, and transaction failure. |
+| `FR-15` | Offer Privy Email OTP and external-wallet login, plus SMS OTP only where it is enabled and available for the configured plan and region. |
+| `FR-16` | Create or restore an embedded EVM wallet for a Privy user without an external wallet, while keeping wallet address as the only onchain membership identity. |
+| `FR-17` | Keep Privy and wagmi on one explicit active wallet, and block logout, wallet switching, and account changes while transaction outcome is active or uncertain. |
 
 ## UX requirements
 
@@ -127,19 +134,25 @@ Expiry is never shortened.
 
 ## Data and privacy requirements
 
-- Wallet addresses are the member identity.
-- Do not collect legal names, emails, phone numbers, postal addresses, IDs,
-  photos, biometrics, or location history.
+- Wallet addresses are the only onchain member identity and the only identifier
+  used by the registry and check-in proof.
+- When a user chooses passwordless login, Privy may process an email address or,
+  where enabled and available, a phone number. Unisky Pass must not write those
+  identifiers to Monad, copy them into browser persistence, log them, or store
+  them in a first-party database.
+- Do not collect legal names, postal addresses, IDs, photos, biometrics, or
+  location history.
 - Issuer and program names must remain short, minimal, and non-sensitive because
   onchain values are public and permanent.
 - Camera frames are processed locally for QR decoding and are not retained or
   uploaded by the application.
-- No analytics, tracking profile, server-side account, database, or application
-  event log is part of the MVP.
+- No analytics, tracking profile, first-party server account, database, or
+  application event log is part of the MVP. Privy maintains its own
+  authentication session and linked-wallet records as an independent provider.
 
 ## Technical constraints
 
-- Next.js App Router, TypeScript, Tailwind CSS, wagmi, and viem.
+- Next.js App Router, TypeScript, Tailwind CSS, Privy, wagmi, and viem.
 - `UniskyPassRegistry` on Monad, compiled with Solidity `0.8.28` using Foundry.
 - Vercel hosts the frontend; Monad stores permanent application state.
 - Production defaults to Monad mainnet chain ID `143`, while users may select
@@ -153,10 +166,12 @@ Expiry is never shortened.
 
 Without explicit approval, do not add payments, billing, subscriptions, ERC-20s,
 native-token custody, NFTs, marketplaces, trading or transfers, escrow, refunds,
-email or social login, databases, server-side accounts, OCR, AI, uploads,
+social/OAuth login methods beyond the approved Privy Email/SMS/Wallet methods,
+first-party databases or server-side accounts, OCR, AI, uploads,
 visit-count passes, event tickets, onchain check-in history, staff accounts,
 multi-scanner permissions, analytics, notifications, GPS, face or legal identity
-verification, multichain support, upgradeable proxies, or admin controls.
+verification, chains beyond Monad mainnet/testnet, upgradeable proxies, or admin
+controls.
 
 ## MVP definition of done
 
@@ -169,7 +184,9 @@ The MVP is done when:
 - the human deployer deploys and verifies the unchanged contract on Monad
   mainnet using their own local key;
 - Vercel production is configured with both public deployment maps and defaults
-  to mainnet;
+  to mainnet, with the public Privy App ID and exact allowed production origin;
+- Email and external-wallet login work, SMS is shown only when enabled and
+  available, and a returning embedded-wallet user recovers the same address;
 - the complete core loop passes again on the production URL and mainnet; and
 - UI and documentation use the honest screenshot, replay, and wallet-sharing
   claims above.

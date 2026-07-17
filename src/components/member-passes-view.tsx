@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { RefreshCw, ScanLine, WalletCards } from "lucide-react";
-import { useAccount } from "wagmi";
+import { RefreshCw, ScanLine } from "lucide-react";
 import { ContractSetupNotice } from "@/components/contract-setup-notice";
 import { useNetwork } from "@/components/network-provider";
 import { EmptyState } from "@/components/empty-state";
@@ -10,11 +9,13 @@ import { LoadingCards } from "@/components/loading-cards";
 import { PageIntro } from "@/components/page-intro";
 import { PassCard } from "@/components/pass-card";
 import { Button } from "@/components/ui/button";
-import { WalletButton } from "@/components/wallet-button";
+import { WalletSessionNotice } from "@/components/wallet-session-notice";
 import { useMemberPasses } from "@/hooks/use-member-passes";
+import { useWalletSession } from "@/hooks/use-wallet-session";
 
 export function MemberPassesView() {
-  const { address, isConnected, chainId } = useAccount();
+  const { address, chainId, status: walletSessionStatus } =
+    useWalletSession();
   const { deployment, selectedChainId } = useNetwork();
   const contractAddress = deployment.contractAddress;
   const networkConfigurationError = deployment.configurationError;
@@ -28,7 +29,7 @@ export function MemberPassesView() {
           title="My Passes"
           description="Every membership connected to this wallet, with its current status read from Monad."
           action={
-            isConnected ? (
+            walletSessionStatus === "ready" ? (
               <Link
                 href="/check-in"
                 className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-ink bg-ink px-4 text-sm font-bold text-white shadow-[3px_3px_0_var(--violet)]"
@@ -44,12 +45,11 @@ export function MemberPassesView() {
         </div>
 
         <div className="mt-7">
-          {!isConnected ? (
-            <EmptyState
-              icon={<WalletCards className="size-5" />}
-              title="Connect the wallet that holds your pass"
-              description="Passes are matched to wallet addresses. Connecting lets this page look up your memberships without creating an account."
-              action={<WalletButton />}
+          {walletSessionStatus !== "ready" ? (
+            <WalletSessionNotice
+              status={walletSessionStatus}
+              signedOutTitle="Connect the wallet that holds your pass"
+              signedOutDescription="Passes are matched to wallet addresses. Login lets this page look up memberships without creating a first-party Unisky Pass profile."
             />
           ) : networkConfigurationError ? (
             <EmptyState

@@ -23,10 +23,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Contract tooling: Foundry with Solidity `0.8.28`.
 - Preserve the existing `src/app` layout. Do not create a second root `app/`
   tree.
-- There is no application backend, database, server-side account system, or
-  trusted browser persistence. Permanent state belongs on Monad. Temporary
-  challenges, used nonces, drafts, and preferences may use browser storage but
-  must always be treated as untrusted.
+- There is no first-party application backend, database, server-side account
+  system, or trusted browser persistence. Privy is the approved external
+  authentication and embedded-wallet provider. Permanent state belongs on
+  Monad. Temporary challenges, used nonces, drafts, and preferences may use
+  browser storage but must always be treated as untrusted.
 - Do not add an indexer for the MVP. Use contract getters and Multicall3-batched
   reads. There is no onchain check-in history.
 
@@ -84,9 +85,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Privacy and security
 
-- Wallet addresses are the only member identity. Do not collect legal names,
-  emails, phone numbers, postal addresses, IDs, photos, biometrics, or location
-  history.
+- Wallet addresses are the only onchain member identity. The explicitly approved
+  Privy integration may process an optional email address or phone number for
+  passwordless login and embedded-wallet recovery. Unisky Pass must never write
+  those identifiers onchain, persist them in its own storage, or use them as
+  membership identity. Do not collect legal names, postal addresses, IDs,
+  photos, biometrics, or location history.
 - Issuer and program display names must be short and non-sensitive because they
   are public and permanent onchain.
 - Never commit secrets. `DEPLOYER_PRIVATE_KEY` is Foundry-only; it must never be
@@ -99,10 +103,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Out of scope without explicit approval
 
 Do not add payments or subscriptions, ERC-20s, native-token custody, NFTs or
-trading, escrow, refunds, social/email login, databases, server accounts, OCR,
+trading, escrow, refunds, social login beyond the explicitly approved Privy
+email/SMS/wallet methods, databases, first-party server accounts, OCR,
 AI, uploads, visit-count passes, event tickets, onchain check-in logs, staff or
 multi-scanner permissions, analytics, notifications, GPS, face/identity checks,
-multichain support, upgradeable proxies, or admin controls.
+chains beyond Monad mainnet/testnet, upgradeable proxies, or admin controls.
 
 ## Required checks and delivery
 

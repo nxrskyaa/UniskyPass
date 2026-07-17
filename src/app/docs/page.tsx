@@ -33,9 +33,9 @@ export const metadata: Metadata = {
 
 const memberSteps = [
   {
-    title: "Connect the holder wallet",
+    title: "Open the holder wallet",
     description:
-      "Open My Passes and connect the same wallet address the issuer used when creating your pass. Switch to the network requested by the app.",
+      "Connect the external wallet used for issuance, or log in with Email (and SMS where available) to restore your Privy embedded wallet. Confirm the active address and selected network.",
   },
   {
     title: "Review the live pass state",
@@ -58,7 +58,7 @@ const issuerSteps = [
   {
     title: "Register the issuer wallet",
     description:
-      "Open the Issuer Dashboard, connect the wallet that will control the programs, and register a short, non-sensitive display name.",
+      "Open the Issuer Dashboard, connect an external wallet or use a Privy embedded wallet, confirm the active address, and register a short, non-sensitive display name.",
   },
   {
     title: "Create a time-based program",
@@ -85,6 +85,9 @@ const checkInSteps = [
 ];
 
 const troubleshooting = [
+  ["Login did not finish", "Wait for Privy to initialize, then retry Email or Wallet. Request a new OTP if the prior code expired."],
+  ["SMS is unavailable", "Phone login depends on the enabled Privy plan, provider, and country. Use Email or Wallet when SMS is not offered."],
+  ["Wrong active wallet", "Open the wallet menu and select the exact address used for the issuer or pass. Account changes reset temporary scanner state."],
   ["No passes appear", "Confirm the connected wallet, expected network, and registry. An RPC failure must not be mistaken for an empty wallet."],
   ["Wrong network", "Use Monad mainnet for the live deployment or Monad testnet for rehearsal. Do not mix a chain, RPC, registry, and explorer from different environments."],
   ["Pass not active yet", "The pass has a future validFrom time. Contract time, not the phone clock, decides when it becomes active."],
@@ -339,7 +342,7 @@ export default function DocsPage() {
               <p className="mt-6 font-mono text-xs font-bold tracking-[0.14em] text-danger uppercase">What is not protected</p>
               <h2 className="mt-2 text-3xl font-black tracking-[-0.05em]">Wallet control is not human identity.</h2>
               <p className="mt-4 text-sm leading-7 text-ink-soft">
-                Wallet sharing is not prevented, replay memory is session-only, and issuer registration is permissionless. The MVP is not a formal security audit or a cross-device access-control backend.
+                Wallet sharing is not prevented, replay memory is session-only, and issuer registration is permissionless. Privy login proves access to a login channel and wallet, not legal identity. The MVP is not a formal security audit or a cross-device access-control backend.
               </p>
             </CardBody>
           </Card>
@@ -350,7 +353,7 @@ export default function DocsPage() {
             <div>
               <p className="font-mono text-xs font-bold tracking-[0.14em] text-lime uppercase">Privacy in one paragraph</p>
               <p className="mt-3 max-w-4xl text-sm leading-7 text-white/65">
-                There is no Unisky Pass account database. Wallet addresses, issuer/program names, pass timing, and revocation are public on Monad and cannot be deleted. Camera frames stay local and the app collects no legal name, email, phone, ID, photo, biometric, or location history. Vercel, wallet software, and the configured RPC remain independent infrastructure providers.
+                Unisky Pass has no first-party account database. Privy processes optional Email or available SMS login and embedded-wallet sessions, but Unisky Pass does not persist those identifiers or write them onchain. Wallet relationships, issuer/program names, pass timing, and revocation are public on Monad and cannot be deleted. Camera frames stay local; Privy, Vercel, wallet software, and the configured RPC remain independent infrastructure providers.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">

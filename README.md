@@ -15,14 +15,17 @@ This repository contains:
 - an EIP-712 challenge/response check-in protocol encoded as QR codes; and
 - deployment and verification tooling for Monad testnet and mainnet.
 
-Unisky Pass has no backend, database, server-side account system, payment flow,
-or custody. Permanent pass state lives on Monad. Browser storage is used only
-for untrusted temporary UI state and session-scoped replay tracking.
+Unisky Pass has no first-party backend, database, payment flow, or custody.
+Privy provides optional passwordless authentication and embedded EVM wallets;
+permanent membership state and authority still live at wallet addresses on
+Monad. Browser storage is used only for untrusted temporary UI preferences and
+session-scoped replay tracking.
 
 ## Core flow
 
 1. An issuer registers, creates a program, and issues a pass to a wallet.
-2. The member connects that wallet and sees the pass in **My Passes**.
+2. The member connects an external wallet or logs in through Privy to use the
+   embedded wallet that holds the pass, then opens **My Passes**.
 3. The issuer opens **Scanner Mode** and displays a random, short-lived challenge
    QR.
 4. The member scans it, selects an eligible pass, and signs an EIP-712 proof.
@@ -56,7 +59,8 @@ in the app. Every release must still complete a testnet dry run first.
 
 - Node.js `20.19.0` or newer and npm (the repository engine requirement)
 - Foundry (`forge`, `cast`, and `anvil`)
-- A browser wallet that supports Monad
+- A browser wallet that supports Monad, or an email-based Privy login that
+  creates or restores an embedded EVM wallet
 - Testnet MON for the dry run
 - Mainnet MON only when the human deployer is ready to release
 
@@ -79,6 +83,9 @@ both public deployments and choose only the initial default:
 
 ```dotenv
 NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID=10143
+NEXT_PUBLIC_PRIVY_APP_ID=cmrojn0js00bg0djs58eirybr
+# Optional: set only after creating a Privy app client for this environment.
+NEXT_PUBLIC_PRIVY_CLIENT_ID=
 NEXT_PUBLIC_MONAD_MAINNET_RPC_URL=https://rpc.monad.xyz
 NEXT_PUBLIC_MONAD_MAINNET_EXPLORER_URL=https://monadscan.com
 NEXT_PUBLIC_UNISKY_PASS_MAINNET_CONTRACT_ADDRESS=0x935D7681Fd0454f38848925fc03d918dA036Ed99
@@ -88,7 +95,20 @@ NEXT_PUBLIC_UNISKY_PASS_TESTNET_CONTRACT_ADDRESS=0x7a2fDcaa6eAC3a0c8E0E6E391Ca9c
 ```
 
 Production normally sets `NEXT_PUBLIC_DEFAULT_MONAD_CHAIN_ID=143`; changing the
-default does not remove either network from the selector.
+default does not remove either network from the selector. The Privy App ID and
+optional Client ID are public browser identifiers. This client-only app does not
+need a Privy App Secret, and no Privy secret or authorization key belongs in
+`.env.local`, Vercel, source control, or a `NEXT_PUBLIC_` variable.
+
+Before local or hosted login testing, configure the Privy Dashboard to enable
+Email and Wallet. Enable SMS only where it is available for the project's Privy
+plan and target countries; do not promise phone login for an unsupported region.
+Set embedded Ethereum wallet creation to `users-without-wallets`, support Monad
+mainnet and testnet, and allow only exact controlled origins. For this project,
+allow `http://localhost:3000` during development and
+`https://unisky-pass.vercel.app` in production. Register a specific controlled
+preview origin or app client instead of the unsafe generic
+`https://*.vercel.app` wildcard.
 
 ## Build and test
 
@@ -137,9 +157,11 @@ and smoke tests are in [Deployment plan](docs/DEPLOYMENT_PLAN.md).
 
 Use two wallets and two devices where possible:
 
-1. Connect the issuer wallet on Monad and register an issuer.
+1. Connect the issuer wallet, or log in through Privy and use the embedded
+   wallet, on Monad; then register an issuer.
 2. Create a time-based program and issue a pass to the member wallet.
-3. Connect the member wallet and confirm the pass appears with the right status.
+3. Connect or log back into the member wallet and confirm the pass appears with
+   the right status.
 4. Open Scanner Mode as the issuer and create a challenge.
 5. Scan and sign as the member; no member transaction should be requested.
 6. Scan the response as the issuer and confirm a fresh onchain check returns
@@ -164,10 +186,11 @@ Use two wallets and two devices where possible:
 ## Explicitly out of scope
 
 Payments, subscriptions, token custody, ERC-20s, NFTs, pass trading, visit-count
-passes, single-use tickets, event tickets, databases, server accounts, social
-login, AI, OCR, uploads, onchain check-in history, staff permissions, analytics,
-notifications, location or biometric checks, multichain support, upgradeable
-proxies, and admin controls are not part of this MVP.
+passes, single-use tickets, event tickets, first-party databases or server
+accounts, social/OAuth methods not enabled in Privy, AI, OCR, uploads, onchain
+check-in history, staff permissions, analytics, notifications, location or
+biometric checks, chains beyond Monad mainnet and testnet, upgradeable proxies,
+and admin controls are not part of this MVP.
 
 Unisky Pass is a membership verification product, not an NFT platform, and the
 contract never holds user funds.
