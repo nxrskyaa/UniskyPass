@@ -8,7 +8,6 @@ import type { MemberPass } from "@/lib/chain/records";
 export function PassCard({ item }: { item: MemberPass }) {
   return (
     <Card className="group relative overflow-hidden transition hover:-translate-y-1 hover:border-ink hover:shadow-[5px_6px_0_var(--violet)]">
-      <div className="absolute top-0 right-0 h-20 w-20 translate-x-8 -translate-y-8 rounded-full bg-violet/12 transition-transform group-hover:scale-125" />
       <div className="p-5 sm:p-6">
         <div className="flex items-start justify-between gap-3">
           <StatusBadge status={item.status} />
@@ -28,13 +27,13 @@ export function PassCard({ item }: { item: MemberPass }) {
         </div>
         <Link
           href={`/passes/${item.id.toString()}`}
-          className="mt-5 flex min-h-11 items-center justify-between rounded-xl border border-line bg-paper px-3.5 text-sm font-bold transition group-hover:border-ink group-hover:bg-lime"
+          className="mt-5 flex min-h-11 items-center justify-between border border-line bg-paper px-3.5 text-sm font-bold transition group-hover:border-ink group-hover:bg-lime"
         >
           View pass
           <ArrowUpRight className="size-4" aria-hidden />
         </Link>
       </div>
-      <div className="h-2 bg-[repeating-linear-gradient(90deg,var(--violet)_0_14px,transparent_14px_22px)]" />
+      <div className="h-2 bg-violet" />
     </Card>
   );
 }

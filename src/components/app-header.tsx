@@ -26,10 +26,10 @@ export function AppHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 border-b backdrop-blur-xl",
+        "sticky top-0 z-40 border-b",
         isHome
-          ? "border-white/10 bg-ink/90 text-white supports-[backdrop-filter]:bg-ink/78"
-          : "border-ink/9 bg-paper/82 text-ink supports-[backdrop-filter]:bg-paper/76",
+          ? "border-white/10 bg-ink text-white"
+          : "border-ink/15 bg-paper text-ink",
       )}
     >
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">

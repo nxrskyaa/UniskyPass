@@ -119,7 +119,7 @@ export function NetworkSelector({
             : "Network selection is locked while a transaction is pending."
         }
         className={cn(
-          "inline-flex min-h-10 items-center gap-2 rounded-xl border px-3 text-xs font-bold transition duration-200 disabled:cursor-wait disabled:opacity-55",
+          "inline-flex min-h-10 items-center gap-2 border px-3 text-xs font-bold transition duration-200 disabled:cursor-wait disabled:opacity-55",
           tone === "dark"
             ? "border-white/16 bg-white/8 text-white shadow-[2px_2px_0_rgb(200_255_77/55%)] hover:bg-white/13"
             : "border-line bg-white/88 text-ink shadow-sm hover:border-ink/45 hover:bg-white",
@@ -146,7 +146,7 @@ export function NetworkSelector({
           role="listbox"
           aria-label="Monad network"
           className={cn(
-            "absolute top-[calc(100%+0.6rem)] right-0 z-50 w-60 rounded-2xl border p-1.5 shadow-[5px_6px_0_var(--violet)] backdrop-blur-xl",
+            "absolute top-[calc(100%+0.6rem)] right-0 z-50 w-60 border p-1.5 shadow-[5px_6px_0_var(--violet)]",
             tone === "dark"
               ? "border-white/15 bg-[#191922] text-white"
               : "border-ink bg-paper text-ink",
@@ -185,7 +185,7 @@ export function NetworkSelector({
                   disabled={isLocked}
                   onClick={() => void chooseNetwork(network.id)}
                   className={cn(
-                    "flex min-h-14 w-full items-center justify-between gap-3 rounded-xl px-3 text-left transition disabled:cursor-wait disabled:opacity-55",
+                    "flex min-h-14 w-full items-center justify-between gap-3 px-3 text-left transition disabled:cursor-wait disabled:opacity-55",
                     isSelected
                       ? network.active
                       : tone === "dark"

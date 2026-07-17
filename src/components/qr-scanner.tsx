@@ -101,7 +101,7 @@ export function QrScanner({
       <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-ink bg-ink">
         <video ref={videoRef} muted playsInline className="h-full w-full object-cover" aria-label={prompt} />
         {!running ? (
-          <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_center,rgb(108_76_255/32%),transparent_55%)] p-6 text-center text-white">
+          <div className="absolute inset-0 grid place-items-center bg-ink/90 p-6 text-center text-white">
             <div>
               <span className="mx-auto grid size-14 place-items-center rounded-2xl border border-white/20 bg-white/8"><ScanLine className="size-7 text-lime" /></span>
               <p className="mt-4 text-sm font-semibold">{prompt}</p>

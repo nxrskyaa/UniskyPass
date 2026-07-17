@@ -27,8 +27,8 @@ export function AppFooter() {
             <p className="mt-4 max-w-md text-sm leading-6 text-white/48">
               Verifiable, time-based membership records on Monad. The contract holds no funds, passes never transfer, and check-in asks for a fresh wallet proof.
             </p>
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-lime/25 bg-lime/8 px-3 py-1.5 text-xs font-bold text-lime">
-              <span className="size-1.5 rounded-full bg-lime" />
+            <div className="mt-6 inline-flex items-center gap-2 border border-lime/25 bg-lime/8 px-3 py-1.5 text-xs font-bold text-lime">
+              <span className="size-1.5 bg-lime" />
               BUILT ON MONAD
             </div>
           </div>

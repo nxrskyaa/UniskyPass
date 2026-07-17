@@ -134,7 +134,7 @@ export function WalletButton({ tone = "light" }: { tone?: "light" | "dark" }) {
         </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/45 backdrop-blur-sm data-[state=open]:animate-[fade-in_.15s_ease-out]" />
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/75 data-[state=open]:animate-[fade-in_.15s_ease-out]" />
         <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[1.5rem] border border-ink bg-paper p-5 shadow-[7px_7px_0_var(--violet)] sm:p-6">
           <div className="flex items-start justify-between gap-4">
             <div>

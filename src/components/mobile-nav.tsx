@@ -17,7 +17,7 @@ export function MobileNav() {
 
   return (
     <nav
-      className="fixed bottom-3 left-1/2 z-40 grid w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 grid-cols-4 rounded-2xl border border-white/12 bg-ink/94 p-1.5 text-white shadow-[0_18px_60px_rgb(17_18_23/35%),4px_4px_0_var(--violet)] backdrop-blur-xl xl:hidden"
+      className="fixed bottom-3 left-1/2 z-40 grid w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 grid-cols-4 border border-white/18 bg-ink p-1.5 text-white shadow-[4px_4px_0_var(--violet)] xl:hidden"
       aria-label="Mobile navigation"
     >
       {links.map(({ href, label, icon: Icon }) => {
@@ -28,7 +28,7 @@ export function MobileNav() {
             href={href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl text-[0.66rem] font-semibold transition duration-200",
+              "flex min-h-12 flex-col items-center justify-center gap-0.5 text-[0.66rem] font-semibold transition duration-200",
               active ? "bg-lime text-ink" : "text-white/58 hover:bg-white/10 hover:text-white",
             )}
           >

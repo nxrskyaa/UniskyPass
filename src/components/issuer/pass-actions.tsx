@@ -26,7 +26,7 @@ export function PassActions({ passId, revoked }: { passId: bigint; revoked: bool
           </Button>
         </Dialog.Trigger>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/45 backdrop-blur-sm" />
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/75" />
           <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-ink bg-paper p-5 shadow-[6px_6px_0_var(--violet)]">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -74,7 +74,7 @@ export function PassActions({ passId, revoked }: { passId: bigint; revoked: bool
           </Button>
         </AlertDialog.Trigger>
         <AlertDialog.Portal>
-          <AlertDialog.Overlay className="fixed inset-0 z-50 bg-ink/45 backdrop-blur-sm" />
+          <AlertDialog.Overlay className="fixed inset-0 z-50 bg-ink/75" />
           <AlertDialog.Content className="fixed top-1/2 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-danger bg-paper p-5 shadow-[6px_6px_0_var(--danger)]">
             <CircleAlert className="size-8 text-danger" />
             <AlertDialog.Title className="mt-4 text-xl font-black tracking-tight">Permanently revoke pass #{passId.toString()}?</AlertDialog.Title>

@@ -1,10 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AppFooter } from "@/components/app-footer";
-import { AppHeader } from "@/components/app-header";
-import { MobileNav } from "@/components/mobile-nav";
-import { NetworkBanner } from "@/components/network-banner";
-import { Providers } from "@/components/providers";
+import { AppRouteShell } from "@/components/app-route-shell";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -60,13 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="min-h-full antialiased">
-        <Providers>
-          <NetworkBanner />
-          <AppHeader />
-          <main className="min-h-[calc(100vh-5rem)] pb-24 xl:pb-0">{children}</main>
-          <AppFooter />
-          <MobileNav />
-        </Providers>
+        <AppRouteShell>{children}</AppRouteShell>
       </body>
     </html>
   );
