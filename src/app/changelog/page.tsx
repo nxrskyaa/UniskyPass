@@ -9,7 +9,7 @@ import {
   KeyRound,
   Rocket,
   ShieldAlert,
-  Sparkles,
+  ShieldCheck,
   TestTube2,
 } from "lucide-react";
 import { PageIntro } from "@/components/page-intro";
@@ -177,7 +177,7 @@ export default function ChangelogPage() {
           <aside className="space-y-5 lg:sticky lg:top-28 lg:self-start" aria-label="Release summary">
             <Card className="border-ink bg-ink text-white">
               <CardBody>
-                <Sparkles className="size-6 text-lime" aria-hidden />
+                <ShieldCheck className="size-6 text-lime" aria-hidden />
                 <p className="mt-5 font-mono text-xs font-bold tracking-[0.14em] text-lime uppercase">MVP scope</p>
                 <p className="mt-2 text-2xl font-black tracking-[-0.04em]">One contract. Two modes. One proof loop.</p>
                 <p className="mt-3 text-sm leading-6 text-white/58">

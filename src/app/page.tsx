@@ -12,7 +12,6 @@ import {
   RadioTower,
   ScanLine,
   ShieldCheck,
-  Sparkles,
   Store,
   UserRound,
   WalletCards,
@@ -64,6 +63,7 @@ const proofPoints = [
 ];
 
 const networkRail = [
+  "BUILT ON MONAD",
   "MONAD MAINNET · 143",
   "MONAD TESTNET · 10143",
   "FRESH EIP-712 PROOFS",
@@ -80,12 +80,10 @@ export default function Home() {
         <div className="hero-glow hero-glow-two" aria-hidden />
         <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-[1.03fr_.97fr]">
           <div className="relative z-10">
-            <div className="hero-enter inline-flex items-center gap-2 rounded-full border border-lime/35 bg-lime/10 px-3 py-1.5 text-xs font-bold text-lime backdrop-blur">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-lime opacity-60" />
-                <span className="relative inline-flex size-2 rounded-full bg-lime" />
-              </span>
-              Live on Monad mainnet + testnet
+            <div className="hero-enter inline-flex items-center gap-3 font-mono text-xs font-black tracking-[0.18em] text-lime uppercase">
+              <span className="h-px w-8 bg-lime" aria-hidden />
+              Build on Monad
+              <span className="h-px w-8 bg-lime/40" aria-hidden />
             </div>
             <h1 className="hero-enter hero-delay-1 balance-text mt-7 max-w-3xl text-[clamp(3.55rem,9vw,7rem)] leading-[0.84] font-black tracking-[-0.082em]">
               Membership that moves at <span className="text-lime">your speed.</span>
@@ -179,13 +177,13 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="network-rail overflow-hidden border-b border-ink bg-lime py-3">
+      <div className="network-rail overflow-hidden border-y border-ink/15 bg-lime py-3">
         <p className="sr-only">Mainnet live. Testnet ready. Fresh wallet proof. Sixty-second challenges. Non-transferable membership. Open contract state.</p>
         <div className="network-rail-track flex w-max items-center" aria-hidden="true">
           {[...networkRail, ...networkRail].map((item, index) => (
             <span key={`${item}-${index}`} className="flex items-center gap-4 px-5 font-mono text-xs font-black tracking-[0.12em] whitespace-nowrap">
               {item}
-              <Sparkles className="size-3.5" aria-hidden />
+              <span className="size-1.5 rounded-full bg-ink/55" aria-hidden />
             </span>
           ))}
         </div>

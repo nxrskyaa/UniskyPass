@@ -44,7 +44,7 @@ function errorMessage(error: unknown) {
     : "The wallet action could not be completed.";
 }
 
-export function WalletButton() {
+export function WalletButton({ tone = "light" }: { tone?: "light" | "dark" }) {
   const [open, setOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<string>();
   const [actionError, setActionError] = useState<string>();
@@ -69,7 +69,7 @@ export function WalletButton() {
   if (!privyReady || !authenticated) {
     return (
       <Button
-        variant="primary"
+        variant={tone === "dark" ? "secondary" : "primary"}
         size="sm"
         disabled={!privyReady || isModalOpen}
         onClick={() => login()}
@@ -112,7 +112,7 @@ export function WalletButton() {
       }}
     >
       <Dialog.Trigger asChild>
-        <Button variant={address ? "secondary" : "primary"} size="sm">
+        <Button variant="secondary" size="sm">
           {address ? (
             <>
               <span className="size-2 rounded-full bg-success" aria-hidden />

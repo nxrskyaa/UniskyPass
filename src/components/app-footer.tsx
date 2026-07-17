@@ -29,7 +29,7 @@ export function AppFooter() {
             </p>
             <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-lime/25 bg-lime/8 px-3 py-1.5 text-xs font-bold text-lime">
               <span className="size-1.5 rounded-full bg-lime" />
-              MAINNET + TESTNET LIVE
+              BUILT ON MONAD
             </div>
           </div>
 
