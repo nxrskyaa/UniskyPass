@@ -15,6 +15,8 @@
     "contracts:test": "forge test --root contracts",
     "contract:deploy:testnet": "forge script script/Deploy.s.sol:Deploy --root contracts --rpc-url https://testnet-rpc.monad.xyz --broadcast --gas-estimate-multiplier 110",
     "contract:deploy:mainnet": "forge script script/Deploy.s.sol:Deploy --root contracts --rpc-url https://rpc.monad.xyz --broadcast --gas-estimate-multiplier 110",
+    "contract:deploy:v2:testnet": "forge script script/DeployV2.s.sol:DeployV2 --root contracts --rpc-url https://testnet-rpc.monad.xyz --broadcast --gas-estimate-multiplier 110",
+    "contract:deploy:v2:mainnet": "forge script script/DeployV2.s.sol:DeployV2 --root contracts --rpc-url https://rpc.monad.xyz --broadcast --gas-estimate-multiplier 110",
     "contract:verify": "node scripts/verify-contract.mjs"
   },
   "engines": {
